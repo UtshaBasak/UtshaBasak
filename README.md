@@ -191,10 +191,6 @@ A Unix-style file system on a flat disk image, written in C. A write-ahead journ
 
 <img src="https://streak-stats.demolab.com?user=UtshaBasak&theme=tokyonight&hide_border=true&border_radius=10" alt="GitHub streak" />
 
-<img width="100%" src="https://github-readme-activity-graph.vercel.app/graph?username=UtshaBasak&theme=tokyo-night&hide_border=true&area=true" alt="Contribution graph" />
-
-<img src="https://github-profile-trophy.vercel.app/?username=UtshaBasak&theme=tokyonight&no-frame=true&no-bg=true&margin-w=6&row=1" alt="Trophies" />
-
 </div>
 
 ---
