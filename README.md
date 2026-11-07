@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,50:203a43,100:2c5364&height=200&section=header&text=Utsha%20Basak&fontSize=56&fontColor=ffffff&fontAlignY=36&desc=Full-Stack%20%7C%20Android%20%7C%20Security%20%7C%20Machine%20Learning&descAlignY=58&descSize=18&animation=fadeIn" alt="Utsha Basak" width="100%" />
+<img src="assets/header.svg" alt="Utsha Basak · Full-Stack · Android · Security · Machine Learning" width="100%" />
 
 <a href="https://github.com/UtshaBasak">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=38BDF8&center=true&vCenter=true&width=640&lines=Computer+Science+graduate+%40+BRAC+University;Full-stack+developer+(MERN+%2B+TypeScript);Native+Android+with+Kotlin+%26+Jetpack+Compose;Blue-team+security+%26+applied+cryptography;Machine+learning+%26+multimodal+deep+learning;Crypto+and+file+systems+from+scratch" alt="Typing SVG" />
@@ -8,21 +8,8 @@
 
 <p>
   <img src="https://komarev.com/ghpvc/?username=UtshaBasak&label=Profile%20views%20since%2025%20Oct%202026&color=0e75b6&style=flat" alt="Profile views since 25 Oct 2026" />
-  <a href="https://github.com/UtshaBasak?tab=followers"><img src="https://img.shields.io/github/followers/UtshaBasak?label=Followers&style=flat&logo=github&color=181717" alt="Followers" /></a>
-  <a href="https://github.com/UtshaBasak?tab=repositories"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fprojects.json&style=flat" alt="Projects" /></a>
-  <img src="https://img.shields.io/badge/On%20GitHub%20since-May%202023-24292f?style=flat&logo=github" alt="On GitHub since May 2023" />
   <img src="https://img.shields.io/badge/Based%20in-Dhaka%2C%20Bangladesh-006A4E?style=flat&logo=googlemaps&logoColor=white" alt="Based in Dhaka, Bangladesh" />
   <img src="https://img.shields.io/badge/Open%20to-Opportunities-brightgreen?style=flat" alt="Open to opportunities" />
-</p>
-
-<p>
-  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fstars.json&style=flat" alt="Total stars" />
-  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fforks.json&style=flat" alt="Total forks" />
-  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fwatchers.json&style=flat" alt="Total watchers" />
-  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones.json&style=flat" alt="Total clones" />
-  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fviews.json&style=flat" alt="Total project views" />
-  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fcontributions.json&style=flat" alt="Contributions in the last 12 months" />
-  <a href="https://github.com/UtshaBasak/UtshaBasak/actions/workflows/profile.yml"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fupdated.json&style=flat" alt="Stats updated" /></a>
 </p>
 
 <p>
@@ -45,27 +32,6 @@ I'm **Utsha Basak**, a Computer Science graduate from **BRAC University** in Dha
 - 🔐 **Things I like doing from scratch:** RSA, ECC and SHA-512 in JavaScript `BigInt`, journaling file systems in C, a 3D game in raw OpenGL.
 - 🤝 **Open to:** software engineering, security and ML roles, and to collaborating on open source.
 
-```kotlin
-data class Developer(
-    val name: String,
-    val basedIn: String,
-    val stack: Map<String, List<String>>,
-    val values: List<String>,
-)
-
-val utsha = Developer(
-    name = "Utsha Basak",
-    basedIn = "Dhaka, Bangladesh 🇧🇩",
-    stack = mapOf(
-        "web" to listOf("TypeScript", "React", "Node.js", "Express", "MongoDB"),
-        "android" to listOf("Kotlin", "Jetpack Compose", "Hilt", "Retrofit"),
-        "security" to listOf("detection engineering", "MITRE ATT&CK", "applied cryptography"),
-        "ml" to listOf("PyTorch", "graph neural networks", "BERT", "scikit-learn"),
-    ),
-    values = listOf("ship it tested", "secure by default", "report numbers honestly"),
-)
-```
-
 ---
 
 ## ⚡ At a glance
@@ -75,7 +41,7 @@ val utsha = Developer(
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/stats-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/stats-light.svg" />
-  <img src="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/stats-light.svg" alt="GitHub stats: stars, forks, watchers, clones, views and contributions" width="49%" />
+  <img src="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/stats-light.svg" alt="GitHub stats: stars, forks, watchers, commits, clones, views, pull requests and issues" width="49%" />
 </picture>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/languages-dark.svg" />
@@ -192,8 +158,6 @@ val utsha = Developer(
 ![OpenGL](https://img.shields.io/badge/OpenGL-5586A4?style=flat-square&logo=opengl&logoColor=white)
 ![Cisco Packet Tracer](https://img.shields.io/badge/Cisco%20Packet%20Tracer-1BA0D7?style=flat-square&logo=cisco&logoColor=white)
 
-<sub>Hover over an icon to see its name.</sub>
-
 </div>
 
 ---
@@ -214,10 +178,7 @@ A full-stack marketplace for new and second-hand books in Bangladesh. Role-based
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 
-![Stars](https://img.shields.io/github/stars/UtshaBasak/BookStoreBD?style=flat-square&label=stars&color=f5b301)
-![Forks](https://img.shields.io/github/forks/UtshaBasak/BookStoreBD?style=flat-square&label=forks&color=8250df)
 ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-BookStoreBD.json&style=flat-square)
-![Last commit](https://img.shields.io/github/last-commit/UtshaBasak/BookStoreBD?style=flat-square&label=last%20commit)
 
 🌐 [**Live site**](https://bookstorebd-loum.onrender.com)
 
@@ -233,8 +194,6 @@ The native Android client for BookStoreBD. It shares accounts, carts and orders 
 ![Material 3](https://img.shields.io/badge/Material%203-757575?style=flat-square&logo=materialdesign&logoColor=white)
 ![Hilt](https://img.shields.io/badge/Hilt-34A853?style=flat-square&logo=android&logoColor=white)
 
-![Stars](https://img.shields.io/github/stars/UtshaBasak/BookStoreBD-Android?style=flat-square&label=stars&color=f5b301)
-![Forks](https://img.shields.io/github/forks/UtshaBasak/BookStoreBD-Android?style=flat-square&label=forks&color=8250df)
 ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-BookStoreBD-Android.json&style=flat-square)
 ![Latest release](https://img.shields.io/github/v/release/UtshaBasak/BookStoreBD-Android?style=flat-square&label=release&color=3DDC84)
 
@@ -254,10 +213,7 @@ A laptop-sized mini-SOC: from raw logs to detections, enriched incidents and ana
 ![mypy](https://img.shields.io/badge/mypy-strict-2A6DB2?style=flat-square)
 ![OpenSSF](https://img.shields.io/badge/OpenSSF-Scorecard-1B7F3B?style=flat-square)
 
-![Stars](https://img.shields.io/github/stars/UtshaBasak/Prohori?style=flat-square&label=stars&color=f5b301)
-![Forks](https://img.shields.io/github/forks/UtshaBasak/Prohori?style=flat-square&label=forks&color=8250df)
 ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-Prohori.json&style=flat-square)
-![Last commit](https://img.shields.io/github/last-commit/UtshaBasak/Prohori?style=flat-square&label=last%20commit)
 
 </td>
 <td width="50%" valign="top">
@@ -270,10 +226,7 @@ A hybrid graph neural network and BERT system for tagging, genre, emotion and cr
 ![BERT](https://img.shields.io/badge/BERT-FFD21E?style=flat-square&logo=huggingface&logoColor=black)
 ![GNN](https://img.shields.io/badge/GNN-Multimodal-6A1B9A?style=flat-square)
 
-![Stars](https://img.shields.io/github/stars/UtshaBasak/GNN-BERT-Music-Context-Understanding?style=flat-square&label=stars&color=f5b301)
-![Forks](https://img.shields.io/github/forks/UtshaBasak/GNN-BERT-Music-Context-Understanding?style=flat-square&label=forks&color=8250df)
 ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-GNN-BERT-Music-Context-Understanding.json&style=flat-square)
-![Last commit](https://img.shields.io/github/last-commit/UtshaBasak/GNN-BERT-Music-Context-Understanding?style=flat-square&label=last%20commit)
 
 </td>
 </tr>
@@ -290,10 +243,7 @@ A full-stack property rental platform that connects owners with tenants. Browse 
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 
-![Stars](https://img.shields.io/github/stars/UtshaBasak/UrbanNest?style=flat-square&label=stars&color=f5b301)
-![Forks](https://img.shields.io/github/forks/UtshaBasak/UrbanNest?style=flat-square&label=forks&color=8250df)
 ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-UrbanNest.json&style=flat-square)
-![Last commit](https://img.shields.io/github/last-commit/UtshaBasak/UrbanNest?style=flat-square&label=last%20commit)
 
 </td>
 <td width="50%" valign="top">
@@ -307,10 +257,7 @@ The security-first edition of UrbanNest: every piece of personal data is encrypt
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white)
 ![Crypto](https://img.shields.io/badge/Cryptography-from%20scratch-8B0000?style=flat-square)
 
-![Stars](https://img.shields.io/github/stars/UtshaBasak/UrbanNest_Secure?style=flat-square&label=stars&color=f5b301)
-![Forks](https://img.shields.io/github/forks/UtshaBasak/UrbanNest_Secure?style=flat-square&label=forks&color=8250df)
 ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-UrbanNest_Secure.json&style=flat-square)
-![Last commit](https://img.shields.io/github/last-commit/UtshaBasak/UrbanNest_Secure?style=flat-square&label=last%20commit)
 
 </td>
 </tr>
@@ -320,14 +267,15 @@ The security-first edition of UrbanNest: every piece of personal data is encrypt
 <summary><b>📂 More projects</b> (click to expand)</summary>
 <br/>
 
-| Project | What it is | Stack | Stars | Clones |
-| --- | --- | --- | --- | --- |
-| 💾 [VSFS](https://github.com/UtshaBasak/CSE321_VSFS) | Journaling file system in C: a write-ahead journal makes file creation crash-atomic, and an `fsck`-style validator proves the image is sound | C, Make | ![Stars](https://img.shields.io/github/stars/UtshaBasak/CSE321_VSFS?style=flat-square&label=%E2%98%85&color=f5b301) | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-CSE321_VSFS.json&style=flat-square) |
-| 🩸 [Blood Donation Camp](https://github.com/UtshaBasak/Blood-Donation-Camp) | Blood bank management system linking donors, recipients and branch banks across Dhaka, with an auditable stock ledger | Django, MySQL | ![Stars](https://img.shields.io/github/stars/UtshaBasak/Blood-Donation-Camp?style=flat-square&label=%E2%98%85&color=f5b301) | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-Blood-Donation-Camp.json&style=flat-square) |
-| 💳 [Loan Approval Prediction](https://github.com/UtshaBasak/CSE422_Project) | Logistic regression, KNN and MLP compared on 45,000 imbalanced loan applications using ROC AUC and per-class metrics | scikit-learn, Seaborn | ![Stars](https://img.shields.io/github/stars/UtshaBasak/CSE422_Project?style=flat-square&label=%E2%98%85&color=f5b301) | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-CSE422_Project.json&style=flat-square) |
-| 🏎️ [EndlessDriver](https://github.com/UtshaBasak/EndlessDriver) | 3D endless lane-racing game drawn entirely with raw OpenGL primitives: turbo, two camera views, four weather moods | Python, PyOpenGL, GLUT | ![Stars](https://img.shields.io/github/stars/UtshaBasak/EndlessDriver?style=flat-square&label=%E2%98%85&color=f5b301) | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-EndlessDriver.json&style=flat-square) |
-| 🏥 [SmartCity Healthcare Network](https://github.com/UtshaBasak/SmartCity) | Enterprise network for a city healthcare system: VLSM, DHCP, DNS, static and dynamic routing, automatic failover | Cisco Packet Tracer | ![Stars](https://img.shields.io/github/stars/UtshaBasak/SmartCity?style=flat-square&label=%E2%98%85&color=f5b301) | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-SmartCity.json&style=flat-square) |
-| 🗂️ [SimpleFS](https://github.com/UtshaBasak/SimpleFS) | A simple inode-based file system on a binary disk image | C | ![Stars](https://img.shields.io/github/stars/UtshaBasak/SimpleFS?style=flat-square&label=%E2%98%85&color=f5b301) | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-SimpleFS.json&style=flat-square) |
+| Project | What it is | Stack | Clones |
+| --- | --- | --- | --- |
+| 💾 [VSFS](https://github.com/UtshaBasak/CSE321_VSFS) | Journaling file system in C: a write-ahead journal makes file creation crash-atomic, and an `fsck`-style validator proves the image is sound | C, Make | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-CSE321_VSFS.json&style=flat-square) |
+| 🩸 [Blood Donation Camp](https://github.com/UtshaBasak/Blood-Donation-Camp) | Blood bank management system linking donors, recipients and branch banks across Dhaka, with an auditable stock ledger | Django, MySQL | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-Blood-Donation-Camp.json&style=flat-square) |
+| 💳 [Loan Approval Prediction](https://github.com/UtshaBasak/CSE422_Project) | Logistic regression, KNN and MLP compared on 45,000 imbalanced loan applications using ROC AUC and per-class metrics | scikit-learn, Seaborn | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-CSE422_Project.json&style=flat-square) |
+| 🏎️ [EndlessDriver](https://github.com/UtshaBasak/EndlessDriver) | 3D endless lane-racing game drawn entirely with raw OpenGL primitives: turbo, two camera views, four weather moods | Python, PyOpenGL, GLUT | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-EndlessDriver.json&style=flat-square) |
+| 🏥 [SmartCity Healthcare Network](https://github.com/UtshaBasak/SmartCity) | Enterprise network for a city healthcare system: VLSM, DHCP, DNS, static and dynamic routing, automatic failover | Cisco Packet Tracer | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-SmartCity.json&style=flat-square) |
+| 🗂️ [SimpleFS](https://github.com/UtshaBasak/SimpleFS) | A simple inode-based file system on a binary disk image | C | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-SimpleFS.json&style=flat-square) |
+| 📗 [MernBookstore](https://github.com/UtshaBasak/MernBookstore) | The first MERN version of BookStoreBD, forked from [Prottasha0212/MernBookstore](https://github.com/Prottasha0212/MernBookstore): authentication, role-based access (admin / seller / buyer), cart and wishlist, order tracking, real-time chat and protected routes | MERN, Socket.IO, Tailwind | ![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FUtshaBasak%2FUtshaBasak%2Foutput%2Fbadges%2Fclones-MernBookstore.json&style=flat-square) |
 
 </details>
 
@@ -349,17 +297,6 @@ The security-first edition of UrbanNest: every piece of personal data is encrypt
 
 ---
 
-## 🧪 How I ship
-
-- ✅ **CI on every push** in seven of my repositories, from TypeScript type checks and Vitest to C test suites.
-- 🔍 **Code scanning** with CodeQL, plus an OpenSSF Scorecard and secret scanning with gitleaks on Prohori.
-- 🤖 **Dependabot** keeps dependencies current across all twelve projects.
-- 🐳 **Containers:** Docker builds for BookStoreBD and Prohori, with BookStoreBD's image published to GitHub Packages.
-- 📖 **Documentation first:** detailed READMEs, wikis, contribution guides and codes of conduct.
-- 📏 **Honest numbers:** baselines, seeds and measurement floors in my ML work, so results are never oversold.
-
----
-
 ## 🐍 Contribution snake
 
 <div align="center">
@@ -367,7 +304,7 @@ The security-first edition of UrbanNest: every piece of personal data is encrypt
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/snake-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/snake-light.svg" />
-  <img alt="A red snake eating my contribution graph and growing with every bite" src="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/snake-light.svg" width="99%" />
+  <img alt="A red and blue snake eating my contribution graph, growing one segment for every ten squares" src="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/snake-light.svg" width="99%" />
 </picture>
 
 </div>
@@ -376,11 +313,11 @@ The security-first edition of UrbanNest: every piece of personal data is encrypt
 
 ## 🎓 Education
 
-| | Institution | Qualification | Group | Year | Result |
-| --- | --- | --- | --- | --- | --- |
-| 🎓 | **BRAC University**, Dhaka | BSc in Computer Science | – | Graduated | – |
-| 🏫 | **Notre Dame College**, Dhaka | Higher Secondary Certificate (HSC) | Science | 2020 | GPA 5.00 / 5.00 |
-| 🏫 | **Bindu Basini Govt. Boys' High School**, Tangail | Secondary School Certificate (SSC) | Science | 2018 | GPA 5.00 / 5.00 |
+| | Institution | Qualification | Year |
+| --- | --- | --- | --- |
+| 🎓 | **BRAC University**, Dhaka | BSc in Computer Science | September 2026 |
+| 🏫 | **Notre Dame College**, Dhaka | Higher Secondary Certificate (HSC) | 2020 |
+| 🏫 | **Bindu Basini Govt. Boys' High School**, Tangail | Secondary School Certificate (SSC) | 2018 |
 
 ---
 
@@ -393,6 +330,6 @@ The security-first edition of UrbanNest: every piece of personal data is encrypt
 
 ⭐ If you find any of my projects useful, a star is always appreciated.
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:2c5364,50:203a43,100:0f2027&height=110&section=footer" alt="Footer wave" width="100%" />
+<img src="assets/footer.svg" alt="Thanks for visiting" width="100%" />
 
 </div>

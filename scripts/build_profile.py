@@ -48,7 +48,7 @@ THEMES: dict[str, dict[str, Any]] = {
         "track": "#21262d",
         "levels": ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"],
         "snake_head": "#ff3b3b",
-        "snake_body": ("#f43f5e", "#9f1239"),
+        "snake_body": ("#ff3b3b", "#3b82f6"),
         "eye": "#ffffff",
         "pupil": "#0d1117",
     },
@@ -62,7 +62,7 @@ THEMES: dict[str, dict[str, Any]] = {
         "track": "#eff2f5",
         "levels": ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
         "snake_head": "#dc2626",
-        "snake_body": ("#ef4444", "#7f1d1d"),
+        "snake_body": ("#dc2626", "#2563eb"),
         "eye": "#ffffff",
         "pupil": "#1f2328",
     },
@@ -133,12 +133,54 @@ def fetch_profile(token: str) -> dict[str, Any]:
     return result["data"]["user"]
 
 
+def fetch_history(token: str, joined: str, now: dt.datetime) -> list[dict[str, Any]]:
+    """Every contribution day since the account was created, oldest first.
+
+    The API returns at most one year per query, so each calendar year gets its own alias.
+    """
+    parts = []
+    for year in range(int(joined[:4]), now.year + 1):
+        start = max(f"{year}-01-01T00:00:00Z", joined)
+        end = min(f"{year}-12-31T23:59:59Z", now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+        parts.append(
+            f'y{year}: contributionsCollection(from: "{start}", to: "{end}") '
+            "{ contributionCalendar { weeks { contributionDays { date contributionCount } } } }"
+        )
+    query = f'query {{ user(login: "{USER}") {{ {" ".join(parts)} }} }}'
+    result = request(f"{API}/graphql", token, {"query": query})
+    if result.get("errors"):
+        raise RuntimeError(f"GraphQL error: {result['errors']}")
+    days: dict[str, int] = {}
+    for collection in result["data"]["user"].values():
+        for week in collection["contributionCalendar"]["weeks"]:
+            for d in week["contributionDays"]:
+                days[d["date"]] = d["contributionCount"]
+    return [{"date": k, "contributionCount": v} for k, v in sorted(days.items())]
+
+
+def longest_streak(days: list[dict[str, Any]]) -> tuple[int, str | None, str | None]:
+    """Longest run of consecutive days with contributions, with its first and last day."""
+    best, best_end, run, prev = 0, None, 0, None
+    for d in days:
+        day = dt.date.fromisoformat(d["date"])
+        if d["contributionCount"]:
+            run = run + 1 if prev and day - prev == dt.timedelta(days=1) and run else 1
+            if run > best:
+                best, best_end = run, day
+        else:
+            run = 0
+        prev = day
+    if not best_end:
+        return 0, None, None
+    return best, (best_end - dt.timedelta(days=best - 1)).isoformat(), best_end.isoformat()
+
+
 def projects_of(user: dict[str, Any]) -> list[dict[str, Any]]:
-    """The owner's own work: no forks, no archived repositories and not the profile itself."""
+    """Every public repository except the profile itself and archived ones."""
     return [
         r
         for r in user["repositories"]["nodes"]
-        if not r["isFork"] and not r["isArchived"] and r["name"] != PROFILE_REPO
+        if not r["isArchived"] and r["name"] != PROFILE_REPO
     ]
 
 
@@ -194,15 +236,19 @@ def fmt_date(iso: str) -> str:
     return f"{d.day} {d.strftime('%b %Y')}"
 
 
+def fmt_span(first: str, last: str) -> str:
+    a, b = dt.date.fromisoformat(first), dt.date.fromisoformat(last)
+    if a == b:
+        return fmt_date(first)
+    if (a.year, a.month) == (b.year, b.month):
+        return f"{a.day}–{b.day} {b.strftime('%b %Y')}"
+    if a.year == b.year:
+        return f"{a.day} {a.strftime('%b')} – {b.day} {b.strftime('%b %Y')}"
+    return f"{fmt_date(first)} – {fmt_date(last)}"
+
+
 def num(n: int) -> str:
     return f"{n:,}"
-
-
-def mix(a: str, b: str, t: float) -> str:
-    """Blend two #rrggbb colours."""
-    ca = [int(a[i : i + 2], 16) for i in (1, 3, 5)]
-    cb = [int(b[i : i + 2], 16) for i in (1, 3, 5)]
-    return "#" + "".join(f"{round(x + (y - x) * t):02x}" for x, y in zip(ca, cb))
 
 
 def pct(t: float, total: float) -> str:
@@ -243,11 +289,9 @@ def stats_card(m: dict[str, Any], theme: dict[str, Any]) -> str:
         ("⭐", "Total stars", m["stars"]),
         ("🍴", "Total forks", m["forks"]),
         ("👀", "Watchers", m["watchers"]),
-        ("📦", "Projects", m["projects"]),
+        ("📝", "Commits (1y)", m["commits"]),
         ("📥", "Clones*", m["clones"]),
         ("👁️", "Project views*", m["views"]),
-        ("🔥", "Contributions (1y)", m["contributions"]),
-        ("📝", "Commits (1y)", m["commits"]),
         ("🔀", "Pull requests", m["prs"]),
         ("🐞", "Issues", m["issues"]),
     ]
@@ -255,7 +299,7 @@ def stats_card(m: dict[str, Any], theme: dict[str, Any]) -> str:
     out.append(f'<text x="22" y="34" class="h fade">GitHub at a glance</text>')
     for i, (icon, label, value) in enumerate(rows):
         col, row = i % 2, i // 2
-        x, y = 22 + col * 200, 66 + row * 32
+        x, y = 22 + col * 200, 72 + row * 38
         out.append(
             f'<g class="fade" {delay(i)}>'
             f'<text x="{x}" y="{y}" font-size="14">{icon}</text>'
@@ -317,14 +361,8 @@ def projects_card(rows: list[dict[str, Any]], since: str | None, theme: dict[str
     w = 840
     row_h = 30
     h = 96 + row_h * len(rows) + 20
-    cols = [("Stars", 505), ("Forks", 565), ("Watchers", 640), ("Clones*", 712), ("Views*", 770)]
-    top_clones = max((r["clones"] for r in rows), default=0) or 1
-    css = (
-        ".bar{transform-box:fill-box;transform-origin:left;transform:scaleX(0);"
-        "animation:grow 1s cubic-bezier(.2,.8,.2,1) forwards}"
-        "@keyframes grow{to{transform:scaleX(1)}}"
-    )
-    out = [svg_open(w, h, "Impact of each project", theme, css)]
+    cols = [("Stars", 540), ("Forks", 610), ("Watchers", 690), ("Clones*", 760), ("Views*", w - 22)]
+    out = [svg_open(w, h, "Impact of each project", theme, "")]
     out.append('<text x="22" y="34" class="h fade">Project impact</text>')
     out.append(
         f'<text x="{w - 22}" y="34" font-size="11" text-anchor="end" class="m fade">'
@@ -335,11 +373,10 @@ def projects_card(rows: list[dict[str, Any]], since: str | None, theme: dict[str
     out.append(f'<text x="330" y="{y}" font-size="12" class="m">Language</text>')
     for label, cx in cols:
         out.append(f'<text x="{cx}" y="{y}" font-size="12" text-anchor="end" class="m">{label}</text>')
-    out.append(f'<text x="{w - 22}" y="{y}" font-size="12" text-anchor="end" class="m">Share</text></g>')
+    out.append("</g>")
     out.append(f'<line x1="22" x2="{w - 22}" y1="{y + 10}" y2="{y + 10}" stroke="{theme["border"]}"/>')
     for i, r in enumerate(rows):
         ty = y + 32 + i * row_h
-        bar = max(2.0, 38 * r["clones"] / top_clones) if r["clones"] else 0
         out.append(
             f'<g class="row fade" {delay(i + 1, .06)}>'
             f'<text x="22" y="{ty}" font-size="13" font-weight="600">{escape(r["name"])}</text>'
@@ -351,34 +388,28 @@ def projects_card(rows: list[dict[str, Any]], since: str | None, theme: dict[str
                 f'<text x="{cx}" y="{ty}" font-size="13" text-anchor="end" '
                 f'font-family="{MONO}">{num(r[key])}</text>'
             )
-        out.append(f'<rect x="780" y="{ty - 10}" width="38" height="8" rx="4" fill="{theme["track"]}"/>')
-        if bar:
-            out.append(
-                f'<rect class="bar" {delay(i, .06, .5)} x="780" y="{ty - 10}" width="{bar:.1f}" '
-                f'height="8" rx="4" fill="{theme["accent"]}"/>'
-            )
         out.append("</g>")
     out.append("</svg>")
     return "".join(out)
 
 
-def activity_card(days: list[dict[str, Any]], total: int, theme: dict[str, Any]) -> str:
+def activity_card(
+    days: list[dict[str, Any]], streak: tuple[int, str | None, str | None], theme: dict[str, Any]
+) -> str:
     w, h = 840, 250
     months: dict[str, int] = {}
     for d in days:
         months[d["date"][:7]] = months.get(d["date"][:7], 0) + d["contributionCount"]
     keys = sorted(months)[-12:]
     peak = max((months[k] for k in keys), default=0) or 1
+    total = sum(d["contributionCount"] for d in days)
     weekdays = [0] * 7
     for d in days:
-        weekdays[d["weekday"]] += d["contributionCount"]
+        weekdays[dt.date.fromisoformat(d["date"]).isoweekday() % 7] += d["contributionCount"]
     names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     best_day = max(days, key=lambda d: d["contributionCount"]) if days else None
     active = sum(1 for d in days if d["contributionCount"])
-    longest = run = 0
-    for d in days:
-        run = run + 1 if d["contributionCount"] else 0
-        longest = max(longest, run)
+    longest, first, last = streak
     css = (
         ".bar{transform-box:fill-box;transform-origin:bottom;transform:scaleY(0);"
         "animation:rise 1s cubic-bezier(.2,.8,.2,1) forwards}"
@@ -410,7 +441,10 @@ def activity_card(days: list[dict[str, Any]], total: int, theme: dict[str, Any])
     facts = [
         ("Total", num(total)),
         ("Active days", f"{active} of {len(days)}"),
-        ("Longest run", f"{longest} days"),
+        (
+            f"Longest streak · {fmt_span(first, last)}" if first and last else "Longest streak",
+            f"{longest} days",
+        ),
         ("Busiest weekday", names[weekdays.index(max(weekdays))] if days else "-"),
         (
             "Best day",
@@ -422,7 +456,7 @@ def activity_card(days: list[dict[str, Any]], total: int, theme: dict[str, Any])
         fy = 70 + i * 32
         out.append(
             f'<g class="fade" {delay(i, .08, .6)}>'
-            f'<text x="610" y="{fy}" font-size="11" class="m">{label}</text>'
+            f'<text x="610" y="{fy}" font-size="11" class="m">{escape(label)}</text>'
             f'<text x="610" y="{fy + 16}" font-size="14" font-weight="700" class="a">{escape(value)}</text></g>'
         )
     out.append("</svg>")
@@ -433,6 +467,7 @@ def activity_card(days: list[dict[str, Any]], total: int, theme: dict[str, Any])
 
 STEP = 0.2  # seconds per cell; the snake moves at five cells a second
 START_LENGTH = 3
+BITES_PER_SEGMENT = 10  # the snake grows by one segment for every ten squares it eats
 CELL, PITCH, LEFT, TOP = 11, 14, 8, 24
 
 
@@ -468,7 +503,7 @@ def snake_svg(weeks: list[list[dict[str, Any]]], theme: dict[str, Any]) -> str:
     w, h = LEFT * 2 + cols * PITCH - (PITCH - CELL), TOP + 7 * PITCH + 6
     path, eaten = snake_path(weeks)
     order = sorted(eaten.items(), key=lambda kv: kv[1])
-    length = START_LENGTH + len(order)
+    length = START_LENGTH + len(order) // BITES_PER_SEGMENT
     last_eat = order[-1][1] if order else 0
     fade_start = max(last_eat, len(path) - 1) + 5
     fade_end = fade_start + 3
@@ -520,14 +555,15 @@ def snake_svg(weeks: list[list[dict[str, Any]]], theme: dict[str, Any]) -> str:
                 f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="2" '
                 f'fill="{theme["levels"][level]}" style="animation:f{c}_{r} {dur:.1f}s linear infinite"/>'
             )
-    # Snake: segment k follows the head k steps behind. New segments appear as food is eaten.
-    lo, hi = theme["snake_body"]
+    # Snake: segment k follows the head k steps behind. A new segment appears with every
+    # tenth bite.
+    red, blue = theme["snake_body"]
     for k in range(length - 1, -1, -1):
         motion = f"animation:mv {dur:.1f}s linear {k * STEP:.1f}s infinite both,"
         if k < START_LENGTH:
             vis = f"base {dur:.1f}s linear infinite"
         else:
-            born = order[k - START_LENGTH][1]
+            born = order[(k - START_LENGTH + 1) * BITES_PER_SEGMENT - 1][1]
             css.append(
                 f"@keyframes o{k}{{0%,{at(born)}{{opacity:0}}{pct(born + .3, steps)},"
                 f"{at(fade_start)}{{opacity:1}}{at(fade_end)},100%{{opacity:0}}}}"
@@ -542,7 +578,7 @@ def snake_svg(weeks: list[list[dict[str, Any]]], theme: dict[str, Any]) -> str:
                 f'<circle cx="4" cy="3.8" r="1" fill="{p}"/><circle cx="8" cy="3.8" r="1" fill="{p}"/></g>'
             )
         else:
-            color = mix(lo, hi, k / max(1, length - 1))
+            color = blue if k % 2 else red  # alternating stripes behind the red head
             body.append(
                 f'<rect width="{CELL}" height="{CELL}" rx="3" fill="{color}" style="{motion}{vis}"/>'
             )
@@ -559,8 +595,8 @@ def snake_svg(weeks: list[list[dict[str, Any]]], theme: dict[str, Any]) -> str:
             )
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" '
-        f'role="img" aria-labelledby="t"><title id="t">A red snake eating {USER}\'s contribution '
-        f"graph and growing with every bite</title><style>{''.join(css)}"
+        f'role="img" aria-labelledby="t"><title id="t">A red and blue snake eating {USER}\'s contribution '
+        f"graph and growing one segment for every ten squares</title><style>{''.join(css)}"
         "@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style>"
         f"{''.join(labels)}{''.join(cells)}{''.join(food_rects)}{''.join(body)}</svg>"
     )
@@ -638,6 +674,8 @@ def main(argv: list[str]) -> int:
 
     sizes: dict[str, list[Any]] = {}
     for r in projects:
+        if r["isFork"]:
+            continue  # a fork's code is not all mine
         for edge in r["languages"]["edges"]:
             name = edge["node"]["name"]
             if name in HIDDEN_LANGUAGES:
@@ -649,7 +687,10 @@ def main(argv: list[str]) -> int:
     cc = user["contributionsCollection"]
     calendar = cc["contributionCalendar"]
     weeks = [w["contributionDays"] for w in calendar["weeks"]]
-    days = [d for week in weeks for d in week]
+    # The calendar starts on a Sunday, so it holds up to 371 days; the card covers a year.
+    cutoff = (now.date() - dt.timedelta(days=364)).isoformat()
+    days = [d for week in weeks for d in week if d["date"] >= cutoff]
+    streak = longest_streak(fetch_history(token, user["createdAt"], now))
     metrics = {
         "stars": sum(r["stars"] for r in rows),
         "forks": sum(r["forks"] for r in rows),
@@ -669,7 +710,7 @@ def main(argv: list[str]) -> int:
         write(out_dir / f"stats-{name}.svg", stats_card(metrics, theme))
         write(out_dir / f"languages-{name}.svg", languages_card(list(langs), theme))
         write(out_dir / f"projects-{name}.svg", projects_card(rows, since, theme))
-        write(out_dir / f"activity-{name}.svg", activity_card(days, calendar["totalContributions"], theme))
+        write(out_dir / f"activity-{name}.svg", activity_card(days, streak, theme))
         write(out_dir / f"snake-{name}.svg", snake_svg(weeks, theme))
 
     since_label = f"since {fmt_date(since)}" if since else "tracking soon"
