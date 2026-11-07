@@ -29,6 +29,7 @@ from typing import Any
 USER = "UtshaBasak"
 PROFILE_REPO = USER
 RECORD = "data/traffic.json"
+SUMMARY = "data/profile.json"  # read by Byte, the robot on the GitHub Pages site
 API = "https://api.github.com"
 
 # Notebooks are counted by their stored outputs, not their code, so they would swamp the chart.
@@ -80,13 +81,9 @@ QUERY = """
 query($login: String!) {
   user(login: $login) {
     createdAt
-    followers { totalCount }
     pullRequests { totalCount }
     issues { totalCount }
     contributionsCollection {
-      totalCommitContributions
-      totalPullRequestContributions
-      totalIssueContributions
       contributionCalendar {
         totalContributions
         weeks { contributionDays { date weekday contributionCount contributionLevel } }
@@ -96,11 +93,17 @@ query($login: String!) {
                  orderBy: {field: STARGAZERS, direction: DESC}) {
       nodes {
         name
+        description
+        url
+        homepageUrl
+        createdAt
+        pushedAt
         isFork
         isArchived
         stargazerCount
         forkCount
         watchers { totalCount }
+        defaultBranchRef { target { ... on Commit { history { totalCount } } } }
         primaryLanguage { name color }
         languages(first: 20, orderBy: {field: SIZE, direction: DESC}) {
           edges { size node { name color } }
@@ -289,7 +292,7 @@ def stats_card(m: dict[str, Any], theme: dict[str, Any]) -> str:
         ("⭐", "Total stars", m["stars"]),
         ("🍴", "Total forks", m["forks"]),
         ("👀", "Watchers", m["watchers"]),
-        ("📝", "Commits (1y)", m["commits"]),
+        ("📝", "Total commits", m["commits"]),
         ("📥", "Clones*", m["clones"]),
         ("👁️", "Project views*", m["views"]),
         ("🔀", "Pull requests", m["prs"]),
@@ -361,7 +364,14 @@ def projects_card(rows: list[dict[str, Any]], since: str | None, theme: dict[str
     w = 840
     row_h = 30
     h = 96 + row_h * len(rows) + 20
-    cols = [("Stars", 540), ("Forks", 610), ("Watchers", 690), ("Clones*", 760), ("Views*", w - 22)]
+    cols = [
+        ("Commits", 500),
+        ("Stars", 560),
+        ("Forks", 620),
+        ("Watchers", 695),
+        ("Clones*", 760),
+        ("Views*", w - 22),
+    ]
     out = [svg_open(w, h, "Impact of each project", theme, "")]
     out.append('<text x="22" y="34" class="h fade">Project impact</text>')
     out.append(
@@ -370,7 +380,7 @@ def projects_card(rows: list[dict[str, Any]], since: str | None, theme: dict[str
     )
     y = 66
     out.append(f'<g class="fade" {delay(0)}><text x="22" y="{y}" font-size="12" class="m">Project</text>')
-    out.append(f'<text x="330" y="{y}" font-size="12" class="m">Language</text>')
+    out.append(f'<text x="300" y="{y}" font-size="12" class="m">Language</text>')
     for label, cx in cols:
         out.append(f'<text x="{cx}" y="{y}" font-size="12" text-anchor="end" class="m">{label}</text>')
     out.append("</g>")
@@ -380,10 +390,10 @@ def projects_card(rows: list[dict[str, Any]], since: str | None, theme: dict[str
         out.append(
             f'<g class="row fade" {delay(i + 1, .06)}>'
             f'<text x="22" y="{ty}" font-size="13" font-weight="600">{escape(r["name"])}</text>'
-            f'<circle cx="336" cy="{ty - 4}" r="5" fill="{r["color"]}"/>'
-            f'<text x="348" y="{ty}" font-size="12" class="m">{escape(r["language"])}</text>'
+            f'<circle cx="306" cy="{ty - 4}" r="5" fill="{r["color"]}"/>'
+            f'<text x="318" y="{ty}" font-size="12" class="m">{escape(r["language"])}</text>'
         )
-        for (key, (_, cx)) in zip(("stars", "forks", "watchers", "clones", "views"), cols):
+        for (key, (_, cx)) in zip(("commits", "stars", "forks", "watchers", "clones", "views"), cols):
             out.append(
                 f'<text x="{cx}" y="{ty}" font-size="13" text-anchor="end" '
                 f'font-family="{MONO}">{num(r[key])}</text>'
@@ -458,6 +468,45 @@ def activity_card(
             f'<g class="fade" {delay(i, .08, .6)}>'
             f'<text x="610" y="{fy}" font-size="11" class="m">{escape(label)}</text>'
             f'<text x="610" y="{fy + 16}" font-size="14" font-weight="700" class="a">{escape(value)}</text></g>'
+        )
+    out.append("</svg>")
+    return "".join(out)
+
+
+EDUCATION = [
+    ("🎓", "BRAC University", "Dhaka", "BSc in Computer Science", "September 2026"),
+    ("🏫", "Notre Dame College", "Dhaka", "Higher Secondary Certificate (HSC)", "2020"),
+    ("🏫", "Bindu Basini Govt. Boys' High School", "Tangail", "Secondary School Certificate (SSC)", "2018"),
+]
+
+
+def education_card(theme: dict[str, Any]) -> str:
+    w, row_h = 840, 44
+    h = 48 + row_h * len(EDUCATION) + 16
+    out = [svg_open(w, h, "Education", theme, "")]
+    y = 34
+    out.append(
+        f'<g class="fade" {delay(0)}>'
+        f'<text x="64" y="{y}" font-size="12" class="m">Institution</text>'
+        f'<text x="450" y="{y}" font-size="12" class="m">Qualification</text>'
+        f'<text x="{w - 24}" y="{y}" font-size="12" text-anchor="end" class="m">Year</text></g>'
+    )
+    out.append(f'<line x1="16" x2="{w - 16}" y1="{y + 14}" y2="{y + 14}" stroke="{theme["border"]}"/>')
+    for i, (icon, school, city, qualification, year) in enumerate(EDUCATION):
+        ty = y + 14 + row_h * i + row_h / 2 + 5
+        if i:
+            out.append(
+                f'<line x1="16" x2="{w - 16}" y1="{ty - row_h / 2 - 5}" y2="{ty - row_h / 2 - 5}" '
+                f'stroke="{theme["border"]}" stroke-opacity=".6"/>'
+            )
+        out.append(
+            f'<g class="fade" {delay(i + 1, .12)}>'
+            f'<text x="26" y="{ty}" font-size="18">{icon}</text>'
+            f'<text x="64" y="{ty}" font-size="14"><tspan font-weight="700">{escape(school)}</tspan>'
+            f'<tspan class="m">, {escape(city)}</tspan></text>'
+            f'<text x="450" y="{ty}" font-size="14">{escape(qualification)}</text>'
+            f'<text x="{w - 24}" y="{ty}" font-size="14" font-weight="700" text-anchor="end" '
+            f'class="a">{escape(year)}</text></g>'
         )
     out.append("</svg>")
     return "".join(out)
@@ -668,9 +717,19 @@ def main(argv: list[str]) -> int:
                 "watchers": r["watchers"]["totalCount"],
                 "clones": traffic_total(record, r["name"], "clones"),
                 "views": traffic_total(record, r["name"], "views"),
+                # Every commit on the default branch, as the repository page counts them.
+                "commits": ((r["defaultBranchRef"] or {}).get("target") or {})
+                .get("history", {})
+                .get("totalCount", 0),
+                "description": r["description"] or "",
+                "url": r["url"],
+                "homepage": r["homepageUrl"] or "",
+                "created": r["createdAt"],
+                "pushed": r["pushedAt"],
+                "fork": r["isFork"],
             }
         )
-    rows.sort(key=lambda r: (-r["stars"], -r["clones"], -r["views"], r["name"].lower()))
+    rows.sort(key=lambda r: (-r["commits"], -r["stars"], r["name"].lower()))
 
     sizes: dict[str, list[Any]] = {}
     for r in projects:
@@ -699,7 +758,7 @@ def main(argv: list[str]) -> int:
         "clones": sum(r["clones"] for r in rows),
         "views": sum(r["views"] for r in rows),
         "contributions": calendar["totalContributions"],
-        "commits": cc["totalCommitContributions"],
+        "commits": sum(r["commits"] for r in rows),
         "prs": user["pullRequests"]["totalCount"],
         "issues": user["issues"]["totalCount"],
         "since": since,
@@ -710,6 +769,7 @@ def main(argv: list[str]) -> int:
         write(out_dir / f"stats-{name}.svg", stats_card(metrics, theme))
         write(out_dir / f"languages-{name}.svg", languages_card(list(langs), theme))
         write(out_dir / f"projects-{name}.svg", projects_card(rows, since, theme))
+        write(out_dir / f"education-{name}.svg", education_card(theme))
         write(out_dir / f"activity-{name}.svg", activity_card(days, streak, theme))
         write(out_dir / f"snake-{name}.svg", snake_svg(weeks, theme))
 
@@ -731,6 +791,44 @@ def main(argv: list[str]) -> int:
         badges[f"views-{r['name']}"] = badge(f"views {since_label}", num(r["views"]), "0e8a16")
     for key, value in badges.items():
         write(out_dir / "badges" / f"{key}.json", json.dumps(value))
+
+    # Byte must only repeat what anyone can see: the public profile, public repositories and the
+    # numbers the README already publishes. So the profile is read without a token, which hides
+    # anything only the owner could see, such as a private e-mail address.
+    req = urllib.request.Request(f"{API}/users/{USER}", headers={"User-Agent": f"{USER}-profile-readme"})
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        account = json.loads(resp.read().decode())
+    total_size = sum(size for _, size, _ in langs) or 1
+    summary = {
+        "updated": now.isoformat(timespec="seconds"),
+        "user": {
+            "login": USER,
+            "name": account.get("name") or USER,
+            "bio": " ".join((account.get("bio") or "").split()),
+            "location": account.get("location") or "",
+            "blog": account.get("blog") or "",
+            "followers": account.get("followers", 0),
+            "following": account.get("following", 0),
+            "publicRepos": account.get("public_repos", 0),
+            "joined": user["createdAt"],
+        },
+        "totals": {k: metrics[k] for k in ("stars", "forks", "watchers", "projects", "clones", "views", "commits")},
+        "trafficSince": since,
+        "contributions": {
+            "lastYear": sum(d["contributionCount"] for d in days),
+            "activeDays": sum(1 for d in days if d["contributionCount"]),
+            "longestStreak": {"days": streak[0], "from": streak[1], "to": streak[2]},
+        },
+        "languages": [
+            {"name": n, "percent": round(100 * size / total_size, 1)} for n, size, _ in langs[:8]
+        ],
+        "projects": rows,
+        "education": [
+            {"school": school, "city": city, "qualification": q, "year": year}
+            for _, school, city, q, year in EDUCATION
+        ],
+    }
+    write(out_dir / SUMMARY, json.dumps(summary, indent=2))
 
     print(
         f"{metrics['projects']} projects, {metrics['stars']} stars, {metrics['forks']} forks, "

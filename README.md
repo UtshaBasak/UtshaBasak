@@ -22,6 +22,12 @@
 
 ---
 
+<div align="center">
+
+<a href="https://utshabasak.github.io/UtshaBasak/" title="Play with Byte"><img src="assets/robot.svg" alt="Byte the robot waves hello. Click to play with it." width="75%" /></a>
+
+</div>
+
 ## 👋 About me
 
 I'm **Utsha Basak**, a Computer Science graduate from **BRAC University** in Dhaka. I build complete products, from the database and API through to the web and Android clients, and I care about the parts most projects skip: CI, code scanning, tests, documentation and honest evaluation.
@@ -313,11 +319,15 @@ The security-first edition of UrbanNest: every piece of personal data is encrypt
 
 ## 🎓 Education
 
-| | Institution | Qualification | Year |
-| --- | --- | --- | --- |
-| 🎓 | **BRAC University**, Dhaka | BSc in Computer Science | September 2026 |
-| 🏫 | **Notre Dame College**, Dhaka | Higher Secondary Certificate (HSC) | 2020 |
-| 🏫 | **Bindu Basini Govt. Boys' High School**, Tangail | Secondary School Certificate (SSC) | 2018 |
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/education-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/education-light.svg" />
+  <img src="https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/output/education-light.svg" alt="Education: BSc in Computer Science, BRAC University, Dhaka, September 2026. HSC, Notre Dame College, Dhaka, 2020. SSC, Bindu Basini Govt. Boys' High School, Tangail, 2018." width="99%" />
+</picture>
+
+</div>
 
 ---
 

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="300" viewBox="0 0 560 300" role="img" aria-labelledby="t d">
+<title id="t">Byte, Utsha's robot</title>
+<desc id="d">A little robot waving and blinking. Click it to play with it.</desc>
+<defs>
+  <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8fbff"/><stop offset="1" stop-color="#c3d0e2"/></linearGradient>
+  <radialGradient id="glow"><stop offset="0" stop-color="#38bdf8" stop-opacity=".9"/><stop offset="1" stop-color="#38bdf8" stop-opacity="0"/></radialGradient>
+  <linearGradient id="fire" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset=".5" stop-color="#fb923c"/><stop offset="1" stop-color="#ef4444" stop-opacity="0"/></linearGradient>
+</defs>
+<style>
+  .bot{animation:bob 3s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-10px)}}
+  .shadow{transform-box:fill-box;transform-origin:center;animation:shadow 3s ease-in-out infinite}
+  @keyframes shadow{50%{transform:scale(.8);opacity:.18}}
+  .flame{transform-box:fill-box;transform-origin:top center;animation:flicker .18s ease-in-out infinite alternate}
+  @keyframes flicker{from{transform:scaleY(.85)}to{transform:scaleY(1.15)}}
+  .pulse{animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.25}}
+  .arm{transform-box:view-box;transform-origin:204px 206px;animation:wave 6s ease-in-out infinite}
+  @keyframes wave{0%,55%,100%{transform:rotate(0)}62%{transform:rotate(-150deg)}67%{transform:rotate(-120deg)}72%{transform:rotate(-160deg)}77%{transform:rotate(-120deg)}82%{transform:rotate(-155deg)}90%{transform:rotate(0)}}
+  .eyes{animation:look 7s ease-in-out infinite}
+  @keyframes look{0%,20%,100%{transform:translate(0,0)}25%,40%{transform:translate(-6px,1px)}45%,60%{transform:translate(6px,-2px)}65%,95%{transform:translate(0,0)}}
+  .lid{transform-box:fill-box;transform-origin:center;animation:blink 4s infinite}
+  @keyframes blink{0%,46%,50%,100%{transform:scaleY(1)}48%{transform:scaleY(.1)}}
+  .head{transform-box:view-box;transform-origin:150px 178px;animation:tilt 7s ease-in-out infinite}
+  @keyframes tilt{0%,20%,100%{transform:rotate(0)}25%,40%{transform:rotate(-5deg)}45%,60%{transform:rotate(5deg)}65%{transform:rotate(0)}}
+  .heart{transform-box:fill-box;transform-origin:center;animation:beat 1s ease-in-out infinite}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.25)}30%{transform:scale(1)}45%{transform:scale(1.15)}}
+  .msg{opacity:0;animation:msg 16s infinite;font:700 17px -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif;fill:#0f172a}
+  .m2{animation-delay:4s}.m3{animation-delay:8s}.m4{animation-delay:12s}
+  @keyframes msg{0%{opacity:0;transform:translateY(6px)}3%,22%{opacity:1;transform:none}25%,100%{opacity:0}}
+  .bubble{transform-box:fill-box;transform-origin:left center;animation:pop 4s ease-in-out infinite}
+  @keyframes pop{0%,100%{transform:scale(1)}3%{transform:scale(1.04)}6%{transform:scale(1)}}
+  .float{opacity:0;animation:up 5s ease-out infinite}
+  .f2{animation-delay:1.7s}.f3{animation-delay:3.4s}
+  @keyframes up{0%{opacity:0;transform:translateY(0)}20%{opacity:.9}100%{opacity:0;transform:translateY(-90px)}}
+  .hint{font:600 13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fill:#38bdf8;animation:pulse 2s ease-in-out infinite}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}.msg.m1{opacity:1}}
+</style>
+
+<ellipse class="shadow" cx="150" cy="292" rx="62" ry="7" fill="#000" opacity=".3"/>
+
+<g class="bot">
+  <path class="flame" d="M134 284 Q150 330 166 284 Z" fill="url(#fire)"/>
+  <g><path d="M98 208 Q70 224 70 252" stroke="#9fb0c8" stroke-width="13" stroke-linecap="round" fill="none"/>
+     <circle cx="70" cy="258" r="12" fill="url(#metal)" stroke="#94a3b8" stroke-width="2"/></g>
+  <g class="arm"><path d="M202 208 Q230 224 230 252" stroke="#9fb0c8" stroke-width="13" stroke-linecap="round" fill="none"/>
+     <circle cx="230" cy="258" r="12" fill="url(#metal)" stroke="#94a3b8" stroke-width="2"/></g>
+  <rect x="136" y="172" width="28" height="16" rx="6" fill="#9fb0c8"/>
+  <rect x="92" y="184" width="116" height="96" rx="32" fill="url(#metal)" stroke="#94a3b8" stroke-width="2.5"/>
+  <rect x="113" y="202" width="74" height="48" rx="12" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+  <path class="heart" d="M150 238 l-12 -12 a7 7 0 0 1 12 -9 a7 7 0 0 1 12 9 z" fill="#f472b6"/>
+  <circle cx="112" cy="266" r="4" fill="#38bdf8"/><circle cx="188" cy="266" r="4" fill="#f472b6"/>
+
+  <g class="head">
+    <line x1="150" y1="60" x2="150" y2="30" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+    <circle class="pulse" cx="150" cy="22" r="20" fill="url(#glow)"/>
+    <circle cx="150" cy="22" r="10" fill="#38bdf8" stroke="#0ea5e9" stroke-width="2"/>
+    <rect x="54" y="98" width="20" height="42" rx="8" fill="#9fb0c8"/>
+    <rect x="226" y="98" width="20" height="42" rx="8" fill="#9fb0c8"/>
+    <rect x="68" y="56" width="164" height="122" rx="40" fill="url(#metal)" stroke="#94a3b8" stroke-width="2.5"/>
+    <rect x="86" y="74" width="128" height="86" rx="28" fill="#0f172a"/>
+    <g class="eyes">
+      <g class="lid"><ellipse cx="122" cy="112" rx="13" ry="16" fill="#38bdf8"/><circle cx="126" cy="107" r="4.5" fill="#fff"/></g>
+      <g class="lid"><ellipse cx="178" cy="112" rx="13" ry="16" fill="#38bdf8"/><circle cx="182" cy="107" r="4.5" fill="#fff"/></g>
+    </g>
+    <ellipse cx="104" cy="138" rx="9" ry="5" fill="#f472b6" opacity=".7"/>
+    <ellipse cx="196" cy="138" rx="9" ry="5" fill="#f472b6" opacity=".7"/>
+    <path d="M137 139 Q150 151 163 139" stroke="#38bdf8" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  </g>
+</g>
+
+<text class="float" x="230" y="70" font-size="20">💙</text>
+<text class="float f2" x="62" y="90" font-size="18">✨</text>
+<text class="float f3" x="246" y="120" font-size="18">❤️</text>
+
+<g class="bubble">
+  <path d="M286 66 h236 a16 16 0 0 1 16 16 v52 a16 16 0 0 1 -16 16 h-236 a16 16 0 0 1 -16 -16 v-18 l-16 -10 l16 -6 v-18 a16 16 0 0 1 16 -16 z" fill="#ffffff" stroke="#38bdf8" stroke-width="2"/>
+  <text class="msg m1" x="404" y="114" text-anchor="middle">Hi! I'm Byte 👋</text>
+  <text class="msg m2" x="404" y="114" text-anchor="middle">Click me to play! 🎮</text>
+  <text class="msg m3" x="404" y="114" text-anchor="middle">I can dance &amp; backflip 🤸</text>
+  <text class="msg m4" x="404" y="114" text-anchor="middle">Pet my head, I won't bite 🥰</text>
+</g>
+<text class="hint" x="404" y="182" text-anchor="middle">▶ click to play with me</text>
+</svg>

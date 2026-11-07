@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Byte · Utsha's pet robot</title>
+<meta name="description" content="Play with Byte, the little robot from Utsha Basak's GitHub profile." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A4%96%3C/text%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg1: #0b1220; --bg2: #0f2027; --bg3: #132f3a; --text: #e6edf3; --muted: #94a3b8; --card: rgba(15, 32, 39, .72);
+    --border: rgba(56, 189, 248, .22); --accent: #38bdf8; --accent2: #a78bfa; --pink: #f472b6;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  html { background: #0b1220; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    color: var(--text); background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 55%, var(--bg3) 100%) fixed;
+    overflow-x: hidden;
+    display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+  }
+  body.disco { animation: disco 1.2s linear infinite; }
+  @keyframes disco { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+  #bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  #bg .t { fill: none; stroke: #16324a; stroke-width: 2; stroke-linejoin: round; }
+  #bg .p { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; animation-name: run; animation-timing-function: linear; animation-iteration-count: infinite; }
+  @keyframes run { to { stroke-dashoffset: 0; } }
+  #bg .n { fill: #0b1220; stroke-width: 2; animation: blink 4s infinite; }
+  @keyframes blink { 0%, 100% { fill: #0b1220; } 50% { fill: currentColor; } }
+  #bg .g { font: 600 15px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #7dd3fc; opacity: 0; animation: rise 9s ease-in-out infinite; }
+  @keyframes rise { 0% { opacity: 0; transform: translateY(0); } 20% { opacity: .35; } 80% { opacity: .2; } 100% { opacity: 0; transform: translateY(-120px); } }
+  #bg .scan { animation: scan 7s linear infinite; }
+  @keyframes scan { from { transform: translateY(-60px); } to { transform: translateY(110vh); } }
+  header, main, .achievements, footer { position: relative; z-index: 1; }
+  header { width: min(1100px, 100% - 32px); display: flex; justify-content: space-between; align-items: center; padding: 16px 0 0; gap: 12px; flex-wrap: wrap; }
+  header h1 { font-size: 18px; margin: 0; letter-spacing: .3px; }
+  header h1 span { color: var(--accent); }
+  .meters { display: flex; gap: 14px; align-items: center; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+  .bar { width: 90px; height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; display: inline-block; vertical-align: middle; margin-left: 6px; }
+  .bar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #22c55e, var(--accent)); transition: width .4s; }
+  .bar.low i { background: linear-gradient(90deg, #ef4444, #f97316); }
+  .icon-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 6px 10px; cursor: pointer; font-size: 14px; }
+  .icon-btn:hover { border-color: var(--accent); }
+  main { width: min(1100px, 100% - 32px); flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .arena { width: 100%; display: grid; grid-template-columns: 210px 1fr 210px; align-items: center; gap: 12px; }
+  .side { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 4; }
+  .side button, .chips button {
+    background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px;
+    font-size: 15px; cursor: pointer; text-align: left; transition: transform .15s, border-color .15s, box-shadow .15s; backdrop-filter: blur(6px);
+  }
+  .side button:hover, .chips button:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 0 18px rgba(56,189,248,.25); }
+  .side button:active, .chips button:active { transform: translateY(0) scale(.97); }
+  .side.right button { text-align: right; }
+  .stage { position: relative; width: 100%; height: clamp(440px, calc(100vh - 150px), 700px); }
+  @media (max-width: 820px) {
+    .arena { grid-template-columns: 1fr 1fr; }
+    .stage { grid-column: 1 / -1; order: -1; }
+    .side.right button { text-align: left; }
+  }
+  .bubble {
+    position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%); max-width: min(460px, 92%);
+    background: #fff; color: #0f172a; padding: 12px 16px; border-radius: 16px; font-size: 15px; line-height: 1.4;
+    box-shadow: 0 8px 30px rgba(0,0,0,.25); opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; z-index: 5; text-align: center;
+  }
+  .bubble.show { opacity: 1; pointer-events: auto; }
+  .bubble::after { content: ""; position: absolute; left: 50%; bottom: -9px; transform: translateX(-50%); border: 10px solid transparent; border-top-color: #fff; border-bottom: 0; }
+  .bubble a { color: #0369a1; font-weight: 600; }
+  #botWrap { position: absolute; left: 50%; bottom: 44px; width: 260px; height: 312px; margin: 0 0 0 -130px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; z-index: 3; }
+  #botWrap.dragging { cursor: grabbing; }
+  #bot { width: 100%; height: 100%; overflow: visible; display: block; }
+  #bot .part { transform-box: view-box; }
+  #head { transform-origin: 150px 178px; transition: transform .25s ease-out; }
+  #armL { transform-origin: 96px 206px; }
+  #armR { transform-origin: 204px 206px; }
+  #eyes { transition: transform .08s linear; }
+  .eye > * { display: none; }
+  #face[data-eyes="normal"] .eye .e-normal,
+  #face[data-eyes="happy"] .eye .e-happy,
+  #face[data-eyes="closed"] .eye .e-closed,
+  #face[data-eyes="dizzy"] .eye .e-dizzy,
+  #face[data-eyes="heart"] .eye .e-heart,
+  #face[data-eyes="star"] .eye .e-star,
+  #face[data-eyes="x"] .eye .e-x,
+  #face[data-eyes="off"] .eye .e-off,
+  #face[data-eyes="wide"] .eye .e-wide { display: inline; }
+  .mouth > * { display: none; }
+  #face[data-mouth="smile"] .m-smile, #face[data-mouth="grin"] .m-grin, #face[data-mouth="o"] .m-o,
+  #face[data-mouth="flat"] .m-flat, #face[data-mouth="wavy"] .m-wavy, #face[data-mouth="cat"] .m-cat { display: inline; }
+  #cheeks { opacity: 0; transition: opacity .3s; }
+  #face.blush #cheeks { opacity: .85; }
+  .e-dizzy { animation: spin 1s linear infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #bulb { transition: fill .2s; }
+  #bulbGlow { opacity: .35; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .9; } }
+  #flame { transform-box: fill-box; transform-origin: top center; animation: flicker .18s ease-in-out infinite alternate; }
+  @keyframes flicker { from { transform: scaleY(.85); } to { transform: scaleY(1.12); } }
+  .sleepy #flame { animation-duration: .6s; opacity: .5; }
+  #bot.hot .metal { fill: #fecaca; }
+  .screen > g { display: none; }
+  .screen[data-mode="heart"] .s-heart, .screen[data-mode="cpu"] .s-cpu, .screen[data-mode="clock"] .s-clock,
+  .screen[data-mode="smile"] .s-smile, .screen[data-mode="boot"] .s-boot, .screen[data-mode="battery"] .s-battery,
+  .screen[data-mode="code"] .s-code, .screen[data-mode="music"] .s-music { display: inline; }
+  .s-heart path { transform-box: fill-box; transform-origin: center; animation: beat 1s ease-in-out infinite; }
+  @keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.25); } 30% { transform: scale(1); } 45% { transform: scale(1.15); } }
+  .s-cpu polyline { stroke-dasharray: 120; animation: draw 1.5s linear infinite; }
+  @keyframes draw { from { stroke-dashoffset: 120; } to { stroke-dashoffset: 0; } }
+  .shadow { position: absolute; left: 50%; bottom: 18px; width: 150px; height: 18px; margin-left: -75px; border-radius: 50%; background: rgba(0,0,0,.35); filter: blur(4px); transition: transform .3s, opacity .3s; z-index: 1; }
+  .particle { position: fixed; pointer-events: none; z-index: 10; font-size: 22px; will-change: transform, opacity; left: 0; top: 0; }
+  .panel { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 20px; margin: 14px 0; backdrop-filter: blur(6px); }
+  .panel h2 { font-size: 17px; margin: 0 0 4px; }
+  .panel .sub { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip-group { margin-top: 12px; }
+  .chip-title { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
+  .chips button { border-radius: 999px; padding: 7px 12px; font-size: 13px; }
+  .live { color: var(--muted); font-size: 12px; margin-top: 10px; }
+  .live b { color: var(--accent); font-weight: 600; }
+  .help { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 900px) { .help { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .help { grid-template-columns: 1fr; } }
+  .help div { border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; background: rgba(11,18,32,.5); }
+  .help h3 { margin: 0 0 6px; font-size: 14px; }
+  .help ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+  .help li b { color: var(--text); font-weight: 600; }
+  kbd { background: var(--card); border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 12px; }
+  .achievements { width: min(960px, 100% - 32px); display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; }
+  .ach { font-size: 12px; padding: 5px 10px; border-radius: 999px; border: 1px dashed var(--border); color: var(--muted); }
+  .ach.on { border-style: solid; border-color: var(--accent); color: var(--text); background: var(--card); }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 120px); background: #111827; color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.35); transition: transform .35s; z-index: 20; border: 1px solid #38bdf8; }
+  .toast.show { transform: translate(-50%, 0); }
+  footer { color: var(--muted); font-size: 13px; padding: 0 16px 20px; text-align: center; }
+  footer a { color: var(--accent); }
+  .zzz { position: absolute; font-weight: 800; color: var(--accent); pointer-events: none; z-index: 4; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
+</style>
+</head>
+<body>
+<svg id="bg" aria-hidden="true"></svg>
+<header>
+  <h1>🤖 Meet <span>Byte</span>, Utsha's pet robot!</h1>
+  <div class="meters">
+    <span>⚡ Energy <span class="bar" id="energyBar"><i></i></span></span>
+    <span>💖 Happiness <span class="bar" id="happyBar"><i></i></span></span>
+    <span>🖱️ <b id="clicks">0</b> clicks</span>
+    <button class="icon-btn" id="soundBtn" title="Sound effects">🔇 Sound off</button>
+  </div>
+</header>
+
+<main>
+  <div class="arena">
+  <div class="side left" role="group" aria-label="Things to do with Byte">
+    <button data-act="wave">👋 Say hi</button>
+    <button data-act="dance">💃 Dance</button>
+    <button data-act="joke">😂 Tell a joke</button>
+    <button data-act="who">🧑‍💻 Who made you?</button>
+  </div>
+  <div class="stage" id="stage">
+    <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    <div class="shadow" id="shadow"></div>
+    <div id="botWrap" aria-label="Byte the robot. Click, double-click, drag or pet me." role="button" tabindex="0">
+      <svg id="bot" viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f8fbff" /><stop offset="1" stop-color="#c3d0e2" />
+          </linearGradient>
+          <radialGradient id="glow"><stop offset="0" stop-color="#38bdf8" stop-opacity=".9" /><stop offset="1" stop-color="#38bdf8" stop-opacity="0" /></radialGradient>
+          <linearGradient id="fire" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fde68a" /><stop offset=".5" stop-color="#fb923c" /><stop offset="1" stop-color="#ef4444" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+
+        <!-- jet flame -->
+        <path id="flame" class="part" d="M132 286 Q150 345 168 286 Z" fill="url(#fire)" />
+
+        <!-- arms (behind the body) -->
+        <g id="armL" class="part">
+          <path d="M98 208 Q70 224 70 252" stroke="#9fb0c8" stroke-width="13" stroke-linecap="round" fill="none" />
+          <circle cx="70" cy="258" r="12" class="metal" fill="url(#metal)" stroke="#94a3b8" stroke-width="2" />
+        </g>
+        <g id="armR" class="part">
+          <path d="M202 208 Q230 224 230 252" stroke="#9fb0c8" stroke-width="13" stroke-linecap="round" fill="none" />
+          <circle cx="230" cy="258" r="12" class="metal" fill="url(#metal)" stroke="#94a3b8" stroke-width="2" />
+        </g>
+
+        <!-- body -->
+        <rect x="136" y="172" width="28" height="16" rx="6" fill="#9fb0c8" />
+        <rect x="92" y="184" width="116" height="100" rx="32" class="metal" fill="url(#metal)" stroke="#94a3b8" stroke-width="2.5" />
+        <rect id="chest" x="113" y="202" width="74" height="50" rx="12" fill="#0f172a" stroke="#334155" stroke-width="2" style="cursor:pointer" />
+        <g class="screen" id="screen" data-mode="heart" style="pointer-events:none">
+          <g class="s-heart"><path d="M150 239 l-12 -12 a7 7 0 0 1 12 -9 a7 7 0 0 1 12 9 z" fill="#f472b6" /></g>
+          <g class="s-cpu"><polyline points="118,230 128,230 133,216 139,242 145,224 151,234 157,226 163,230 182,230" fill="none" stroke="#22c55e" stroke-width="2.5" /></g>
+          <g class="s-clock"><text id="clockText" x="150" y="233" text-anchor="middle" font-size="15" font-weight="700" fill="#38bdf8" font-family="ui-monospace,Consolas,monospace">00:00</text></g>
+          <g class="s-smile"><text x="150" y="235" text-anchor="middle" font-size="20" fill="#facc15" font-family="ui-monospace,Consolas,monospace">^‿^</text></g>
+          <g class="s-boot"><rect x="120" y="224" width="60" height="8" rx="4" fill="#1e293b" /><rect id="bootBar" x="120" y="224" width="0" height="8" rx="4" fill="#38bdf8" /><text x="150" y="217" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="ui-monospace,Consolas,monospace">BYTE OS</text></g>
+          <g class="s-battery"><rect x="128" y="217" width="40" height="20" rx="4" fill="none" stroke="#22c55e" stroke-width="2.5" /><rect x="168" y="223" width="4" height="8" rx="1" fill="#22c55e" /><rect id="battFill" x="131" y="220" width="0" height="14" rx="2" fill="#22c55e" /></g>
+          <g class="s-code"><text x="150" y="232" text-anchor="middle" font-size="14" fill="#a78bfa" font-family="ui-monospace,Consolas,monospace">&lt;/&gt;</text></g>
+          <g class="s-music"><text x="150" y="236" text-anchor="middle" font-size="20" fill="#38bdf8">♪♫</text></g>
+        </g>
+        <circle cx="112" cy="268" r="4" fill="#38bdf8" />
+        <circle cx="188" cy="268" r="4" fill="#f472b6" />
+
+        <!-- head -->
+        <g id="head" class="part">
+          <line x1="150" y1="60" x2="150" y2="30" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" />
+          <circle id="bulbGlow" cx="150" cy="22" r="20" fill="url(#glow)" />
+          <circle id="bulb" cx="150" cy="22" r="10" fill="#38bdf8" stroke="#0ea5e9" stroke-width="2" style="cursor:pointer" />
+          <rect x="54" y="98" width="20" height="42" rx="8" fill="#9fb0c8" />
+          <rect x="226" y="98" width="20" height="42" rx="8" fill="#9fb0c8" />
+          <rect x="68" y="56" width="164" height="122" rx="40" class="metal" fill="url(#metal)" stroke="#94a3b8" stroke-width="2.5" />
+          <g id="face" data-eyes="normal" data-mouth="smile">
+            <rect x="86" y="74" width="128" height="86" rx="28" fill="#0f172a" />
+            <g id="eyes">
+              <g class="eye" id="eyeL" transform="translate(122 112)">
+                <g class="e-normal"><ellipse rx="13" ry="16" fill="#38bdf8" /><circle class="hl" cx="4" cy="-5" r="4.5" fill="#fff" /></g>
+                <g class="e-wide"><circle r="17" fill="#38bdf8" /><circle class="hl" cx="5" cy="-6" r="6" fill="#fff" /></g>
+                <path class="e-happy" d="M-12 4 Q0 -14 12 4" stroke="#38bdf8" stroke-width="6" fill="none" stroke-linecap="round" />
+                <path class="e-closed" d="M-12 2 Q0 9 12 2" stroke="#38bdf8" stroke-width="5" fill="none" stroke-linecap="round" />
+                <path class="e-dizzy" d="M0 0 m-2 0 a2 2 0 1 1 4 0 a5 5 0 1 1 -10 0 a8 8 0 1 1 16 0 a11 11 0 1 1 -22 0" stroke="#38bdf8" stroke-width="3" fill="none" />
+                <path class="e-heart" d="M0 12 l-13 -13 a7.5 7.5 0 0 1 13 -9 a7.5 7.5 0 0 1 13 9 z" fill="#f472b6" />
+                <path class="e-star" d="M0 -15 L4 -5 L15 -5 L6 2 L9 13 L0 6 L-9 13 L-6 2 L-15 -5 L-4 -5 Z" fill="#facc15" />
+                <path class="e-x" d="M-10 -10 L10 10 M10 -10 L-10 10" stroke="#ef4444" stroke-width="5" stroke-linecap="round" />
+                <path class="e-off" d="M-11 0 L11 0" stroke="#334155" stroke-width="4" stroke-linecap="round" />
+              </g>
+              <g class="eye" id="eyeR" transform="translate(178 112)">
+                <g class="e-normal"><ellipse rx="13" ry="16" fill="#38bdf8" /><circle class="hl" cx="4" cy="-5" r="4.5" fill="#fff" /></g>
+                <g class="e-wide"><circle r="17" fill="#38bdf8" /><circle class="hl" cx="5" cy="-6" r="6" fill="#fff" /></g>
+                <path class="e-happy" d="M-12 4 Q0 -14 12 4" stroke="#38bdf8" stroke-width="6" fill="none" stroke-linecap="round" />
+                <path class="e-closed" d="M-12 2 Q0 9 12 2" stroke="#38bdf8" stroke-width="5" fill="none" stroke-linecap="round" />
+                <path class="e-dizzy" d="M0 0 m-2 0 a2 2 0 1 1 4 0 a5 5 0 1 1 -10 0 a8 8 0 1 1 16 0 a11 11 0 1 1 -22 0" stroke="#38bdf8" stroke-width="3" fill="none" />
+                <path class="e-heart" d="M0 12 l-13 -13 a7.5 7.5 0 0 1 13 -9 a7.5 7.5 0 0 1 13 9 z" fill="#f472b6" />
+                <path class="e-star" d="M0 -15 L4 -5 L15 -5 L6 2 L9 13 L0 6 L-9 13 L-6 2 L-15 -5 L-4 -5 Z" fill="#facc15" />
+                <path class="e-x" d="M-10 -10 L10 10 M10 -10 L-10 10" stroke="#ef4444" stroke-width="5" stroke-linecap="round" />
+                <path class="e-off" d="M-11 0 L11 0" stroke="#334155" stroke-width="4" stroke-linecap="round" />
+              </g>
+            </g>
+            <g id="cheeks"><ellipse cx="104" cy="138" rx="9" ry="5" fill="#f472b6" /><ellipse cx="196" cy="138" rx="9" ry="5" fill="#f472b6" /></g>
+            <g class="mouth">
+              <path class="m-smile" d="M137 139 Q150 151 163 139" stroke="#38bdf8" stroke-width="4.5" fill="none" stroke-linecap="round" />
+              <path class="m-grin" d="M134 136 Q150 158 166 136 Z" fill="#38bdf8" />
+              <ellipse class="m-o" cx="150" cy="143" rx="7" ry="8" fill="#38bdf8" />
+              <path class="m-flat" d="M139 143 L161 143" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round" />
+              <path class="m-wavy" d="M134 143 q4 -5 8 0 t8 0 t8 0 t8 0" stroke="#38bdf8" stroke-width="3.5" fill="none" stroke-linecap="round" />
+              <path class="m-cat" d="M136 140 q7 8 14 0 q7 8 14 0" stroke="#38bdf8" stroke-width="4" fill="none" stroke-linecap="round" />
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="side right" role="group" aria-label="More things to do with Byte">
+    <button data-act="projects">Show projects 🚀</button>
+    <button data-act="fact">Fun fact 🧠</button>
+    <button data-act="charge">Charge 🔋</button>
+    <button data-act="sleep">Nap time 😴</button>
+  </div>
+  </div>
+
+  <section class="panel" aria-labelledby="askTitle">
+    <h2 id="askTitle">💬 Ask Byte about Utsha</h2>
+    <p class="sub">Tap a question and Byte answers it. Answers come only from Utsha's public GitHub profile, public repositories and README.</p>
+    <div id="chips"></div>
+    <div class="live" id="live">Connecting to GitHub…</div>
+  </section>
+
+  <section class="panel" aria-labelledby="helpTitle">
+    <h2 id="helpTitle">🕹️ How to play with Byte</h2>
+    <p class="sub">Byte is a tiny robot made of SVG and JavaScript. It lives on Utsha's GitHub profile and loves attention. Here is everything it can do.</p>
+    <div class="help">
+      <div><h3>🖱️ Mouse &amp; touch</h3><ul>
+        <li><b>Hover</b>: Byte smiles, blushes and follows your cursor with its eyes.</li>
+        <li><b>Click</b>: a random surprise every time.</li>
+        <li><b>Double-click</b>: a backflip.</li>
+        <li><b>Drag</b>: carry Byte around. Throw it fast to make it spin.</li>
+        <li><b>Rub the head</b> side to side to pet it.</li></ul></div>
+      <div><h3>🎯 Hidden buttons</h3><ul>
+        <li><b>Antenna</b>: lightning and a bright idea.</li>
+        <li><b>Chest screen</b>: cycles heartbeat, CPU graph, clock, smiley, code and music.</li>
+        <li><b>12 clicks</b>, or clicking very fast, makes Byte dizzy.</li>
+        <li><b>Every 30 clicks</b> it overheats and reboots.</li></ul></div>
+      <div><h3>⌨️ Keyboard</h3><ul>
+        <li><b>Arrow keys</b> fly Byte around. <b>Space</b> makes it jump.</li>
+        <li>Type <b>hello</b>, <b>dance</b>, <b>joke</b>, <b>love</b>, <b>sleep</b> or <b>utsha</b> anywhere on the page.</li>
+        <li>Type <b>disco</b>, or the <b>Konami code</b> (↑ ↑ ↓ ↓ ← → ← → B A), for a party.</li></ul></div>
+      <div><h3>💬 Questions</h3><ul>
+        <li>Tap any question in <b>Ask Byte about Utsha</b>: about Utsha, work and skills, GitHub stats.</li>
+        <li><b>Project spotlight</b> has a button for every public repository.</li>
+        <li>Answers use public data only and refresh automatically every few hours.</li></ul></div>
+      <div><h3>⚡ Energy &amp; 💖 happiness</h3><ul>
+        <li>Every action uses <b>energy</b>. At zero, Byte asks to be charged with 🔋.</li>
+        <li><b>Happiness</b> grows with petting, dancing and love, and slowly fades when Byte is ignored.</li>
+        <li>Leave Byte alone for 15 seconds and it falls asleep.</li></ul></div>
+      <div><h3>🏅 Achievements &amp; sound</h3><ul>
+        <li>Unlock all <b>13 achievements</b> below. They are saved in your browser.</li>
+        <li>Turn on <b>🔊 Sound</b> at the top for beeps, tunes and robot chatter.</li></ul></div>
+    </div>
+  </section>
+</main>
+
+<div class="achievements" id="achievements" aria-label="Achievements"></div>
+<footer>Built by <a href="https://github.com/UtshaBasak">Utsha Basak</a> · <a href="https://github.com/UtshaBasak">← back to the GitHub profile</a></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s) => document.querySelector(s);
+  const wrap = $("#botWrap"), bot = $("#bot"), face = $("#face"), head = $("#head"), eyes = $("#eyes");
+  const armL = $("#armL"), armR = $("#armR"), screen = $("#screen"), bubble = $("#bubble"), stage = $("#stage");
+  const shadow = $("#shadow"), toastEl = $("#toast");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const rand = (a) => a[Math.floor(Math.random() * a.length)];
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // ---------------------------------------------------------------- storage (optional)
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem("byte:" + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem("byte:" + k, JSON.stringify(v)); } catch { /* private mode */ } },
+  };
+
+  // ---------------------------------------------------------------- state
+  const state = {
+    clicks: 0, energy: 100, happy: 60, busy: false, asleep: false, hot: false, disco: false,
+    lastInput: Date.now(), offset: { x: 0, y: 0 }, jokes: 0, pets: 0, sound: false,
+  };
+
+  // ---------------------------------------------------------------- sound (synthesised, off by default)
+  let ctx = null;
+  function beep(freq = 600, dur = 0.08, type = "square", vol = 0.05, when = 0) {
+    if (!state.sound) return;
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = ctx.currentTime + when, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + dur + 0.02);
+  }
+  const chatter = (n = 5) => { for (let i = 0; i < n; i++) beep(400 + Math.random() * 700, 0.06, "square", 0.04, i * 0.07); };
+  const tune = (notes, step = 0.14, type = "triangle") => notes.forEach((f, i) => beep(f, step * 0.9, type, 0.06, i * step));
+  $("#soundBtn").addEventListener("click", () => {
+    state.sound = !state.sound;
+    $("#soundBtn").textContent = state.sound ? "🔊 Sound on" : "🔇 Sound off";
+    if (state.sound) tune([523, 659, 784]);
+  });
+
+  // ---------------------------------------------------------------- face helpers
+  const setFace = (e, m) => { if (e) face.dataset.eyes = e; if (m) face.dataset.mouth = m; };
+  const neutral = () => { if (!state.asleep && !state.hot) { setFace("normal", "smile"); face.classList.remove("blush"); } };
+  const setScreen = (m) => { screen.dataset.mode = m; };
+
+  let bubbleTimer = 0, typer = 0;
+  function say(html, ms = 3200) {
+    clearTimeout(bubbleTimer); clearInterval(typer);
+    bubble.classList.add("show");
+    const plain = /<[a-z]/i.test(html);
+    if (plain || reduced) { bubble.innerHTML = html; }
+    else {
+      const chars = Array.from(html); let i = 0; bubble.textContent = "";
+      typer = setInterval(() => { i += 2; bubble.textContent = chars.slice(0, i).join(""); if (i >= chars.length) clearInterval(typer); }, 22);
+    }
+    chatter(Math.min(8, 2 + Math.floor(html.length / 18)));
+    positionBubble();
+    bubbleTimer = setTimeout(() => bubble.classList.remove("show"), ms);
+  }
+  function positionBubble() {
+    const s = stage.getBoundingClientRect(), b = wrap.getBoundingClientRect();
+    const x = b.left + b.width / 2 - s.left;
+    bubble.style.left = Math.max(120, Math.min(s.width - 120, x)) + "px";
+    bubble.style.bottom = Math.min(s.height - 60, s.bottom - b.top + 4) + "px";
+  }
+
+  // ---------------------------------------------------------------- meters
+  function meters() {
+    const e = $("#energyBar"), h = $("#happyBar");
+    e.firstElementChild.style.width = state.energy + "%"; e.classList.toggle("low", state.energy < 25);
+    h.firstElementChild.style.width = state.happy + "%"; h.classList.toggle("low", state.happy < 25);
+    $("#clicks").textContent = state.clicks;
+  }
+  const spend = (n) => { state.energy = Math.max(0, state.energy - n); meters(); };
+  const cheer = (n) => { state.happy = Math.max(0, Math.min(100, state.happy + n)); meters(); };
+
+  // ---------------------------------------------------------------- particles
+  function burst(chars, n = 12, spread = 160, from) {
+    if (reduced) n = Math.min(n, 3);
+    const b = from || wrap.getBoundingClientRect();
+    const cx = b.left + b.width / 2, cy = b.top + b.height * 0.35;
+    for (let i = 0; i < n; i++) {
+      const p = document.createElement("span");
+      p.className = "particle"; p.textContent = rand(chars);
+      document.body.appendChild(p);
+      const a = Math.random() * Math.PI * 2, d = spread * (0.4 + Math.random() * 0.8);
+      const dx = Math.cos(a) * d, dy = Math.sin(a) * d - 60;
+      p.animate([
+        { transform: `translate(${cx}px, ${cy}px) scale(.4) rotate(0deg)`, opacity: 1 },
+        { transform: `translate(${cx + dx}px, ${cy + dy}px) scale(1.1) rotate(${(Math.random() - .5) * 540}deg)`, opacity: 1, offset: .7 },
+        { transform: `translate(${cx + dx * 1.1}px, ${cy + dy + 80}px) scale(.8)`, opacity: 0 },
+      ], { duration: 1100 + Math.random() * 600, easing: "cubic-bezier(.2,.7,.3,1)" }).onfinish = () => p.remove();
+    }
+  }
+  function floatUp(char, n = 4) {
+    const b = wrap.getBoundingClientRect();
+    for (let i = 0; i < n; i++) {
+      const p = document.createElement("span");
+      p.className = "particle"; p.textContent = char;
+      document.body.appendChild(p);
+      const x = b.left + b.width * (0.3 + Math.random() * 0.4), y = b.top + b.height * 0.2;
+      p.animate([
+        { transform: `translate(${x}px, ${y}px) scale(.6)`, opacity: 0 },
+        { transform: `translate(${x + 10}px, ${y - 40}px) scale(1)`, opacity: 1, offset: .3 },
+        { transform: `translate(${x - 10}px, ${y - 130}px) scale(1.2)`, opacity: 0 },
+      ], { duration: 1800, delay: i * 250, easing: "ease-out", fill: "backwards" }).onfinish = () => p.remove();
+    }
+  }
+
+  // ---------------------------------------------------------------- body animations
+  const anim = (el, frames, opts) => el.animate(frames, { duration: 600, easing: "ease-in-out", ...opts }).finished.catch(() => {});
+  const tf = () => `translate(${state.offset.x}px, ${state.offset.y}px)`;
+  function place() { wrap.style.transform = tf(); shadow.style.transform = `translateX(${state.offset.x}px) scale(${1 - Math.min(.5, Math.abs(Math.min(0, state.offset.y)) / 300)})`; }
+
+  async function jump(h = 70) {
+    beep(300, .15, "sine", .07); beep(700, .12, "sine", .05, .1);
+    shadow.animate([{ transform: `translateX(${state.offset.x}px) scale(1)` }, { transform: `translateX(${state.offset.x}px) scale(.55)`, opacity: .4 }, { transform: `translateX(${state.offset.x}px) scale(1)` }], { duration: 650 });
+    await anim(wrap, [{ transform: tf() }, { transform: tf() + ` translateY(-${h}px) scaleY(1.05)`, offset: .45 }, { transform: tf() + " translateY(6px) scaleY(.92)", offset: .85 }, { transform: tf() }], { duration: 650 });
+  }
+  const spin = () => { tune([392, 523, 659, 784], .08, "square"); return anim(wrap, [{ transform: tf() + " rotate(0)" }, { transform: tf() + " rotate(360deg)" }], { duration: 800 }); };
+  const flip = () => { tune([300, 450, 600, 900], .09, "sawtooth"); return anim(wrap, [{ transform: tf() }, { transform: tf() + " translateY(-110px) rotate(-180deg)", offset: .5 }, { transform: tf() + " rotate(-360deg)" }], { duration: 900, easing: "cubic-bezier(.3,0,.3,1)" }); };
+  const shake = () => anim(wrap, [0, -10, 10, -8, 8, -4, 4, 0].map((x) => ({ transform: tf() + ` translateX(${x}px)` })), { duration: 500 });
+  const wiggle = () => anim(wrap, [0, -8, 8, -6, 6, 0].map((r) => ({ transform: tf() + ` rotate(${r}deg)` })), { duration: 600 });
+  async function wave(times = 3) {
+    beep(880, .1, "sine", .05);
+    const up = [{ transform: "rotate(0deg)" }, { transform: "rotate(-150deg)", offset: .25 }];
+    for (let i = 0; i < times; i++) { up.push({ transform: "rotate(-120deg)" }, { transform: "rotate(-165deg)" }); }
+    up.push({ transform: "rotate(0deg)" });
+    await anim(armR, up, { duration: 500 + times * 320 });
+  }
+  async function dance() {
+    setScreen("music"); setFace("happy", "grin"); face.classList.add("blush");
+    tune([523, 659, 784, 659, 523, 659, 784, 1047, 784, 659, 784, 523], .16);
+    floatUp("🎵", 6);
+    const moves = [];
+    for (let i = 0; i < 6; i++) moves.push({ transform: tf() + ` translateX(${i % 2 ? 26 : -26}px) rotate(${i % 2 ? 10 : -10}deg)` });
+    moves.push({ transform: tf() });
+    armL.animate([{ transform: "rotate(0)" }, { transform: "rotate(120deg)" }, { transform: "rotate(20deg)" }, { transform: "rotate(120deg)" }, { transform: "rotate(0)" }], { duration: 1900, iterations: 1 });
+    armR.animate([{ transform: "rotate(0)" }, { transform: "rotate(-20deg)" }, { transform: "rotate(-120deg)" }, { transform: "rotate(-20deg)" }, { transform: "rotate(0)" }], { duration: 1900, iterations: 1 });
+    await anim(wrap, moves, { duration: 1900 });
+    setScreen("heart");
+  }
+
+  // ---------------------------------------------------------------- content
+  const greetings = () => {
+    const h = new Date().getHours();
+    const part = h < 5 ? "Burning the midnight oil? 🦉" : h < 12 ? "Good morning! ☀️" : h < 17 ? "Good afternoon! 🌤️" : h < 21 ? "Good evening! 🌆" : "Late-night coding session? 🌙";
+    return [`Hi there! I'm Byte. ${part}`, "Beep boop! Nice to meet you 👋", "Oh, a visitor! Hello hello!", "Welcome! Utsha built me to say hi 🤖"];
+  };
+  const jokes = [
+    "Why do programmers prefer dark mode? Because light attracts bugs. 🐛",
+    "I told my computer I needed a break. It said: 'You seem stressed. Have you tried turning yourself off and on again?'",
+    "There are 10 kinds of robots: those who understand binary and those who don't. 🤖",
+    "Why did the robot go on holiday? It needed to recharge its batteries. 🔋",
+    "A SQL query walks into a bar, walks up to two tables and asks: 'Can I join you?'",
+    "Debugging: being the detective in a crime movie where you are also the murderer. 🕵️",
+    "I'd tell you a UDP joke, but you might not get it.",
+    "Why was the JavaScript developer sad? Because they didn't Node how to Express themselves.",
+    "My code works and I have no idea why. My code doesn't work and I have no idea why. 🙃",
+    "How many programmers does it take to change a light bulb? None, that's a hardware problem. 💡",
+  ];
+  const facts = [
+    "Prohori means 'guard' in Bangla. It watches logs so you don't have to. 🛡️",
+    "UrbanNest Secure has RSA, ECC and SHA-512 written from scratch with BigInt. No crypto library allowed! 🔐",
+    "Utsha's GNN + BERT study looked at 35,984 music tracks. 🎵",
+    "BookStoreBD supports Bangla–English search and even voice search. 📚",
+    "EndlessDriver draws every car, tree and raindrop with raw OpenGL. No game engine! 🏎️",
+    "VSFS is a journaling file system written in C. It survives crashes better than I do. 💾",
+    "The first computer bug was a real moth, found in a Harvard computer in 1947. 🦋",
+    "I'm made of 100% SVG and a sprinkle of JavaScript. ✨",
+  ];
+  const projectsHtml = 'Some of Utsha\'s favourites: <a href="https://github.com/UtshaBasak/BookStoreBD" target="_blank" rel="noopener">BookStoreBD</a>, ' +
+    '<a href="https://github.com/UtshaBasak/BookStoreBD-Android" target="_blank" rel="noopener">its Android app</a>, ' +
+    '<a href="https://github.com/UtshaBasak/Prohori" target="_blank" rel="noopener">Prohori</a> and ' +
+    '<a href="https://github.com/UtshaBasak/UrbanNest_Secure" target="_blank" rel="noopener">UrbanNest Secure</a> 🚀';
+  const whoHtml = 'I was built by <a href="https://github.com/UtshaBasak" target="_blank" rel="noopener">Utsha Basak</a>, a CS graduate from BRAC University who builds web apps, Android apps, security tools and ML models. 🧑‍💻';
+
+  // ---------------------------------------------------------------- achievements
+  const ACH = {
+    hello: "👋 First hello", pet: "🫳 Head pats", flip: "🤸 Backflip", disco: "🪩 Disco fever",
+    speed: "⚡ Speed clicker", reboot: "🔁 Turned it off and on", pilot: "🛸 Pilot", jokes: "😂 Joke lover",
+    owl: "🦉 Night owl", fifty: "🏆 50 clicks", charge: "🔋 Fully charged", nap: "😴 Woke Byte up",
+    curious: "💬 Curious mind",
+  };
+  const unlocked = new Set(store.get("ach", []));
+  function renderAch() {
+    $("#achievements").innerHTML = Object.entries(ACH).map(([k, v]) => `<span class="ach${unlocked.has(k) ? " on" : ""}">${unlocked.has(k) ? v : "🔒 ???"}</span>`).join("")
+      + `<span class="ach on">🏅 ${unlocked.size} / ${Object.keys(ACH).length}</span>`;
+  }
+  let toastTimer = 0;
+  function achieve(k) {
+    if (unlocked.has(k)) return;
+    unlocked.add(k); store.set("ach", [...unlocked]); renderAch();
+    toastEl.textContent = `Achievement unlocked: ${ACH[k]}`; toastEl.classList.add("show");
+    tune([784, 988, 1175], .1, "square");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+  }
+
+  // ---------------------------------------------------------------- actions
+  async function act(name) {
+    if (state.busy && name !== "charge") return;
+    if (state.asleep) { await wake(); if (name === "sleep") return; }
+    if (state.energy <= 0 && name !== "charge") {
+      setFace("closed", "wavy"); say("Low battery… 🪫 Press 🔋 Charge, please?"); wiggle(); return;
+    }
+    state.busy = true; state.lastInput = Date.now();
+    try {
+      switch (name) {
+        case "wave": setFace("happy", "grin"); say(rand(greetings())); await wave(); achieve("hello"); cheer(5); spend(3); break;
+        case "dance": say(rand(["Watch these moves! 🕺", "Robot dance activated!", "Beep-boop-bop, I can't stop! 🎶"])); await dance(); cheer(10); spend(10); break;
+        case "joke": setFace("happy", "grin"); say(rand(jokes), 6000); await wiggle(); state.jokes++; if (state.jokes >= 3) achieve("jokes"); cheer(4); spend(2); break;
+        case "who": setFace("wide", "smile"); setScreen("code"); say(whoHtml, 7000); await jump(30); spend(2); break;
+        case "projects": setFace("star", "grin"); setScreen("code"); say(projectsHtml, 8000); burst(["🚀", "⭐", "✨"], 10); await jump(40); spend(3); break;
+        case "fact": setFace("wide", "o"); say(rand(facts), 6000); await shake(); spend(2); break;
+        case "charge": await charge(); break;
+        case "sleep": state.busy = false; goSleep(true); return;
+      }
+    } finally {
+      state.busy = false;
+      setTimeout(() => { neutral(); if (screen.dataset.mode !== "battery") setScreen("heart"); }, 1400);
+    }
+  }
+  document.querySelectorAll(".side button").forEach((b) => b.addEventListener("click", () => act(b.dataset.act)));
+
+  async function charge() {
+    state.busy = true; setScreen("battery"); setFace("closed", "cat"); say("Charging… ah, that's the stuff. ⚡");
+    const fill = $("#battFill");
+    for (let i = 0; i <= 34; i += 2) { fill.setAttribute("width", i); beep(300 + i * 20, .05, "sine", .03); await sleep(60); }
+    state.energy = 100; meters(); setFace("star", "grin"); burst(["⚡", "✨"], 10);
+    say("100%! I feel like a brand-new robot! 🔋"); achieve("charge"); await jump(60);
+    setScreen("heart"); state.busy = false;
+  }
+
+  const reactions = [
+    async () => { setFace("happy", "grin"); say(rand(["Wheee! 🎉", "Boing!", "Again! Again!"])); await jump(); },
+    async () => { setFace("star", "grin"); say(rand(["Spin to win! 🌀", "Weeeee!"])); await spin(); },
+    async () => { setFace("heart", "cat"); face.classList.add("blush"); say(rand(["Aww, I like you too! 💕", "You're my favourite human. 🥰"])); floatUp("💖", 5); cheer(8); },
+    async () => { setFace("happy", "grin"); say(rand(["Hehe, that tickles! 😆", "Hahaha stop it! 😂"])); await wiggle(); },
+    async () => { setFace("wide", "o"); say("Ah… ah… ACHOO! 🤧"); await sleep(500); burst(["✨", "⚙️", "🔩"], 10); await shake(); },
+    async () => { setFace("happy", "smile"); say(rand(["Hello! 👋", "Hey hey! 👋"])); await wave(2); },
+    async () => { setFace("star", "grin"); say("Confetti time! 🎊"); burst(["🎉", "🎊", "✨", "⭐"], 18, 220); await jump(40); },
+    async () => { setScreen("cpu"); setFace("wide", "flat"); say(rand(["Processing… 🤔", "Calculating the meaning of life… it's 42."])); await sleep(1200); },
+    async () => { setFace("happy", "grin"); setScreen("smile"); say(rand(["Did you know? I run on good vibes and electricity. ⚡", "Beep boop! That means 'thank you' in robot."])); await jump(30); },
+  ];
+
+  const recentClicks = [];
+  async function onClick() {
+    if (dragMoved) return;
+    state.lastInput = Date.now();
+    if (state.asleep) { await wake(); return; }
+    if (state.hot) { say("Too hot to touch! 🔥 Cooling down…"); return; }
+    state.clicks++; meters(); spend(1);
+    const now = Date.now(); recentClicks.push(now);
+    while (recentClicks.length && now - recentClicks[0] > 1500) recentClicks.shift();
+    if (recentClicks.length >= 6) achieve("speed");
+    if (state.clicks === 50) { achieve("fifty"); setFace("heart", "grin"); say("50 clicks! You really like me! 🏆💖"); burst(["🏆", "💖", "🎉"], 20, 240); return; }
+    if (state.clicks % 30 === 0) return overheat();
+    if (state.clicks % 12 === 0 || recentClicks.length >= 8) return dizzy();
+    if (state.busy) return;
+    if (state.energy <= 0) { setFace("closed", "wavy"); say("Low battery… 🪫 Press 🔋 Charge, please?"); wiggle(); return; }
+    state.busy = true;
+    try { await rand(reactions)(); } finally { state.busy = false; setTimeout(() => { neutral(); setScreen("heart"); }, 1300); }
+  }
+
+  async function dizzy() {
+    state.busy = true; setFace("dizzy", "wavy"); say("Whoa… too many clicks… the room is spinning 😵‍💫");
+    tune([600, 500, 400, 300], .15, "sine");
+    await anim(wrap, [0, -12, 12, -10, 10, -6, 6, 0].map((r) => ({ transform: tf() + ` rotate(${r}deg)` })), { duration: 1600 });
+    state.busy = false; neutral();
+  }
+
+  async function overheat() {
+    state.busy = true; state.hot = true; bot.classList.add("hot");
+    setFace("x", "o"); setScreen("cpu"); say("WARNING: CPU at 110°C! OVERHEATING! 🔥");
+    tune([880, 660, 880, 660, 880, 660], .15, "square");
+    const steam = setInterval(() => floatUp("💨", 1), 300);
+    await shake(); await shake(); await sleep(1200);
+    clearInterval(steam);
+    setFace("off", "flat"); setScreen("boot"); say("Rebooting… please hold. ⏳", 4000);
+    const barEl = $("#bootBar");
+    for (let i = 0; i <= 60; i += 4) { barEl.setAttribute("width", i); beep(200 + i * 10, .04, "square", .03); await sleep(120); }
+    bot.classList.remove("hot"); state.hot = false;
+    setFace("wide", "grin"); say("Byte OS v2.0 online! I feel… faster. 🚀"); achieve("reboot");
+    tune([523, 659, 784, 1047], .12); await jump(50);
+    barEl.setAttribute("width", 0); state.busy = false; setScreen("heart"); neutral();
+  }
+
+  // ---------------------------------------------------------------- double click, antenna, chest
+  wrap.addEventListener("dblclick", async (e) => {
+    e.preventDefault(); if (state.asleep || state.hot) return;
+    state.busy = true; setFace("star", "grin"); say("Backflip! 🤸 Did you see that?!");
+    await flip(); burst(["⭐", "✨", "🎉"], 14); achieve("flip"); cheer(6); spend(6);
+    state.busy = false; setTimeout(neutral, 900);
+  });
+  $("#bulb").addEventListener("click", async (e) => {
+    e.stopPropagation(); if (state.asleep) return wake();
+    const bulb = $("#bulb");
+    bulb.setAttribute("fill", "#facc15"); setFace("wide", "o");
+    beep(1200, .05, "sawtooth", .05); beep(1600, .05, "sawtooth", .05, .06);
+    const b = bulb.getBoundingClientRect();
+    burst(["⚡", "💡"], 8, 120, { left: b.left - 60, top: b.top - 20, width: 120, height: 40 });
+    say(rand(["💡 Idea! You should star one of Utsha's repos!", "Antenna boost! Receiving signal from GitHub… 📡", "Zap! ⚡ That's my idea button."]));
+    await jump(25); bulb.setAttribute("fill", "#38bdf8"); neutral();
+  });
+  const screens = ["heart", "cpu", "clock", "smile", "code", "music"];
+  $("#chest").addEventListener("click", (e) => {
+    e.stopPropagation(); if (state.asleep) return wake();
+    const next = screens[(screens.indexOf(screen.dataset.mode) + 1) % screens.length];
+    setScreen(next); beep(900, .04, "square", .04);
+    const lines = { heart: "That's my heart. It beats in binary. 💓", cpu: "Live CPU graph. Mostly thinking about snacks.", clock: "Robot time! ⏰", smile: "^‿^", code: "Currently compiling happiness…", music: "Now playing: Beep Boop Symphony No. 5 🎶" };
+    say(lines[next]);
+  });
+  setInterval(() => { const d = new Date(); $("#clockText").textContent = d.toTimeString().slice(0, 5); }, 1000);
+
+  // ---------------------------------------------------------------- hover, eye tracking, petting
+  let hoverTimer = 0;
+  wrap.addEventListener("pointerenter", () => {
+    state.lastInput = Date.now();
+    if (state.asleep) { wake(); return; }
+    if (state.busy || state.hot) return;
+    setFace("happy", "grin"); face.classList.add("blush");
+    clearTimeout(hoverTimer);
+    hoverTimer = setTimeout(() => { if (!state.busy && !bubble.classList.contains("show")) say(rand(["Ooh, hi! 😊", "Click me, I dare you! 😏", "Hehe, I see your cursor 👀", "Psst… try double-clicking me."])); }, 250);
+  });
+  wrap.addEventListener("pointerleave", () => { clearTimeout(hoverTimer); if (!state.busy) neutral(); });
+
+  let petMoves = [], lastPetX = null, lastDir = 0;
+  document.addEventListener("pointermove", (e) => {
+    state.lastInput = Date.now();
+    if (state.asleep && Math.random() < .02) wake();
+    const r = wrap.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height * 0.31;
+    const dx = e.clientX - cx, dy = e.clientY - cy, dist = Math.hypot(dx, dy) || 1;
+    const k = Math.min(1, dist / 300);
+    eyes.style.transform = `translate(${(dx / dist) * 7 * k}px, ${(dy / dist) * 6 * k}px)`;
+    if (!state.busy) head.style.transform = `rotate(${Math.max(-12, Math.min(12, dx / 40))}deg)`;
+    // petting: quick side-to-side moves over the head
+    const overHead = e.clientX > r.left + r.width * .2 && e.clientX < r.right - r.width * .2 && e.clientY > r.top && e.clientY < r.top + r.height * .5;
+    if (overHead && !dragging) {
+      if (lastPetX !== null) {
+        const dir = Math.sign(e.clientX - lastPetX);
+        if (dir && dir !== lastDir) { petMoves.push(Date.now()); lastDir = dir; }
+      }
+      lastPetX = e.clientX;
+      petMoves = petMoves.filter((t) => Date.now() - t < 1200);
+      if (petMoves.length >= 6 && !state.busy) { petMoves = []; pet(); }
+    } else { lastPetX = null; }
+  });
+  document.documentElement.addEventListener("mouseleave", () => { eyes.style.transform = ""; head.style.transform = ""; });
+
+  async function pet() {
+    state.busy = true; state.pets++;
+    setFace("closed", "cat"); face.classList.add("blush");
+    say(rand(["Purrrr… wait, robots don't purr. Bzzzrrr… 😌", "Head pats! My favourite! 🥰", "Ahh, that's the spot. ✨"]));
+    beep(180, .4, "sine", .05); beep(200, .4, "sine", .05, .35);
+    floatUp("💗", 4); cheer(12); achieve("pet");
+    await wiggle(); state.busy = false; setTimeout(neutral, 1200);
+  }
+
+  // ---------------------------------------------------------------- drag and throw
+  let dragging = false, dragMoved = false, start = null;
+  wrap.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    dragging = true; dragMoved = false;
+    start = { x: e.clientX, y: e.clientY, ox: state.offset.x, oy: state.offset.y, t: Date.now() };
+    wrap.setPointerCapture(e.pointerId);
+  });
+  wrap.addEventListener("pointermove", (e) => {
+    if (!dragging || !start) return;
+    const dx = e.clientX - start.x, dy = e.clientY - start.y;
+    if (!dragMoved && Math.hypot(dx, dy) > 6) {
+      dragMoved = true; wrap.classList.add("dragging");
+      if (state.asleep) wake();
+      setFace("wide", "o"); say(rand(["Whoa, where are we going?! 😮", "I can fly!! 🛸", "Put me down! …actually, this is fun."]));
+    }
+    if (dragMoved) { state.offset.x = start.ox + dx; state.offset.y = start.oy + dy; clampOffset(); place(); }
+  });
+  wrap.addEventListener("pointerup", async (e) => {
+    if (!dragging) return;
+    dragging = false; wrap.classList.remove("dragging");
+    try { wrap.releasePointerCapture(e.pointerId); } catch { /* already released */ }
+    if (dragMoved) {
+      const speed = Math.hypot(e.clientX - start.x, e.clientY - start.y) / Math.max(1, Date.now() - start.t);
+      say(speed > 1.2 ? "Wheeeee! 🌪️ Okay, I'm floating back home." : "Thanks for the ride! Floating back… 🎈");
+      if (speed > 1.2) await spin();
+      await returnHome();
+      setTimeout(() => { dragMoved = false; }, 50);
+      neutral();
+    } else {
+      onClick();
+    }
+  });
+  wrap.addEventListener("keydown", (e) => { if (e.key === "Enter") onClick(); });
+
+  function clampOffset() {
+    const s = stage.getBoundingClientRect();
+    const maxX = s.width / 2 - 90, maxY = 30;
+    state.offset.x = Math.max(-maxX, Math.min(maxX, state.offset.x));
+    state.offset.y = Math.max(-(s.height - 400), Math.min(maxY, state.offset.y));
+  }
+  async function returnHome() {
+    const from = tf(); state.offset = { x: 0, y: 0 };
+    await anim(wrap, [{ transform: from }, { transform: tf() }], { duration: 900, easing: "cubic-bezier(.3,1.4,.5,1)" });
+    place();
+  }
+
+  // ---------------------------------------------------------------- keyboard: words, konami, flying
+  let typed = "";
+  const konami = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+  let kIdx = 0, flyTimer = 0;
+  document.addEventListener("keydown", async (e) => {
+    if (e.target instanceof Element && e.target.closest("button, a, input, textarea")) return;
+    state.lastInput = Date.now();
+    kIdx = e.key === konami[kIdx] ? kIdx + 1 : (e.key === konami[0] ? 1 : 0);
+    if (kIdx === konami.length) { kIdx = 0; return toggleDisco(); }
+    const step = 30, moves = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+    if (moves[e.key]) {
+      e.preventDefault(); if (state.asleep) wake();
+      state.offset.x += moves[e.key][0]; state.offset.y += moves[e.key][1]; clampOffset();
+      wrap.style.transition = "transform .18s ease-out"; place();
+      setFace("wide", "grin"); beep(500 + Math.random() * 200, .04, "sine", .03);
+      achieve("pilot");
+      clearTimeout(flyTimer);
+      flyTimer = setTimeout(async () => { wrap.style.transition = ""; say("Pilot mode off. Returning to base! 🛬"); await returnHome(); neutral(); }, 2500);
+      return;
+    }
+    if (e.key === " ") { e.preventDefault(); if (!state.busy) { state.busy = true; setFace("happy", "grin"); await jump(); state.busy = false; neutral(); } return; }
+    if (e.key.length === 1) {
+      typed = (typed + e.key.toLowerCase()).slice(-12);
+      if (/(hello|hi byte|hey)$/.test(typed)) { typed = ""; act("wave"); }
+      else if (/dance$/.test(typed)) { typed = ""; act("dance"); }
+      else if (/joke$/.test(typed)) { typed = ""; act("joke"); }
+      else if (/love$/.test(typed)) { typed = ""; setFace("heart", "cat"); face.classList.add("blush"); say("I love you too! 💖💖💖"); floatUp("💖", 8); cheer(15); setTimeout(neutral, 2000); }
+      else if (/disco$/.test(typed)) { typed = ""; toggleDisco(); }
+      else if (/sleep$/.test(typed)) { typed = ""; goSleep(true); }
+      else if (/utsha$/.test(typed)) { typed = ""; act("who"); }
+    }
+  });
+
+  let discoBeat = 0;
+  function toggleDisco() {
+    state.disco = !state.disco;
+    document.body.classList.toggle("disco", state.disco);
+    if (state.disco) {
+      achieve("disco"); setFace("star", "grin"); say("🪩 DISCO MODE! Everybody dance! 🕺💃", 4000);
+      burst(["🪩", "✨", "🎶", "💃", "🕺"], 20, 260);
+      discoBeat = setInterval(() => { if (!state.busy) dance(); }, 2200);
+      dance();
+    } else {
+      clearInterval(discoBeat); say("Disco over. That was legendary. 😎"); neutral();
+    }
+  }
+
+  // ---------------------------------------------------------------- idle: blink, look around, sleep
+  function blink() {
+    if (face.dataset.eyes !== "normal") return;
+    face.dataset.eyes = "closed";
+    setTimeout(() => { if (face.dataset.eyes === "closed" && !state.asleep) face.dataset.eyes = "normal"; }, 140);
+  }
+  (function blinkLoop() { blink(); if (Math.random() < .25) setTimeout(blink, 260); setTimeout(blinkLoop, 2200 + Math.random() * 2800); })();
+
+  let zzzTimer = 0;
+  function goSleep(byUser) {
+    if (state.asleep || state.busy) return;
+    state.asleep = true; wrap.classList.add("sleepy"); setFace("closed", "o"); setScreen("clock");
+    say(byUser ? "Okay… just five more minutes… 😴" : "*yawn* It's quiet… I'll take a nap. 😴");
+    tune([392, 330, 262], .3, "sine");
+    anim(wrap, [{ transform: tf() }, { transform: tf() + " translateY(18px) rotate(-4deg)" }], { duration: 1200, fill: "forwards" });
+    zzzTimer = setInterval(() => {
+      const r = wrap.getBoundingClientRect(), s = stage.getBoundingClientRect();
+      const z = document.createElement("span"); z.className = "zzz"; z.textContent = rand(["z", "Z", "z"]);
+      z.style.left = (r.left - s.left + r.width * .72) + "px"; z.style.top = (r.top - s.top + 10) + "px";
+      z.style.fontSize = 14 + Math.random() * 14 + "px"; stage.appendChild(z);
+      z.animate([{ transform: "translate(0,0)", opacity: 0 }, { opacity: 1, offset: .2 }, { transform: "translate(40px,-80px)", opacity: 0 }], { duration: 2200 }).onfinish = () => z.remove();
+    }, 700);
+  }
+  async function wake() {
+    if (!state.asleep) return;
+    state.asleep = false; clearInterval(zzzTimer); wrap.classList.remove("sleepy");
+    wrap.getAnimations().forEach((a) => a.cancel());
+    setFace("wide", "o"); say(rand(["Huh?! I wasn't sleeping, I was… defragmenting! 😳", "!! Oh, hi! I'm awake, I'm awake! 👀"]));
+    achieve("nap"); beep(900, .1, "square", .05);
+    state.busy = true; await jump(50); state.busy = false; neutral(); setScreen("heart");
+  }
+  setInterval(() => {
+    if (!state.asleep && !state.busy && !dragging && Date.now() - state.lastInput > 15000) goSleep(false);
+    if (!state.asleep && !state.busy) { state.happy = Math.max(10, state.happy - 1); meters(); }
+  }, 3000);
+  // gentle hover bob while awake
+  if (!reduced) {
+    let t = 0;
+    (function bob() {
+      t += 0.03;
+      if (!state.asleep && !state.busy && !dragging && !wrap.getAnimations().length) wrap.style.transform = tf() + ` translateY(${Math.sin(t) * 6}px)`;
+      requestAnimationFrame(bob);
+    })();
+  }
+  addEventListener("resize", () => { clampOffset(); place(); });
+
+  // ---------------------------------------------------------------- circuit background (same look as the README banners)
+  const COLORS = ["#38bdf8", "#a78bfa", "#22d3ee", "#f472b6", "#34d399"];
+  function drawBackground() {
+    const svg = $("#bg"), w = innerWidth, h = Math.max(innerHeight, 400);
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    svg.setAttribute("preserveAspectRatio", "none");
+    const parts = [
+      '<defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#38bdf8" fill-opacity=".09"/></pattern>',
+      '<radialGradient id="halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#38bdf8" stop-opacity=".16"/><stop offset="1" stop-color="#38bdf8" stop-opacity="0"/></radialGradient></defs>',
+      `<rect width="${w}" height="${h}" fill="url(#grid)"/>`,
+      `<ellipse cx="${w / 2}" cy="${h * 0.4}" rx="${w * 0.35}" ry="${h * 0.35}" fill="url(#halo)"/>`,
+    ];
+    const reach = Math.min(w * 0.3, 360);
+    let i = 0;
+    for (const side of [1, -1]) {
+      for (let y = 80; y < h - 20; y += 46 + Math.random() * 30) {
+        let x = side > 0 ? -10 : w + 10, yy = Math.round(y / 20) * 20;
+        const stop = side > 0 ? reach * (0.45 + Math.random() * 0.55) : w - reach * (0.45 + Math.random() * 0.55);
+        const pts = [[x, yy]];
+        while (side > 0 ? x < stop : x > stop) {
+          x = side > 0 ? Math.min(x + 40 + Math.random() * 60, stop) : Math.max(x - 40 - Math.random() * 60, stop);
+          pts.push([x, yy]);
+          const jog = [0, 0, 20, -20][Math.floor(Math.random() * 4)];
+          if (jog && yy + jog > 10 && yy + jog < h - 10 && (side > 0 ? x < stop : x > stop)) { yy += jog; pts.push([x, yy]); }
+        }
+        const d = "M" + pts.map((p) => p.map(Math.round).join(",")).join(" L");
+        let len = 0; for (let k = 1; k < pts.length; k++) len += Math.abs(pts[k][0] - pts[k - 1][0]) + Math.abs(pts[k][1] - pts[k - 1][1]);
+        const c = COLORS[i++ % COLORS.length], dur = (3.2 + Math.random() * 3.5).toFixed(2), delay = (Math.random() * 5).toFixed(2);
+        const [ex, ey] = pts[pts.length - 1];
+        parts.push(`<path d="${d}" class="t"/>`);
+        parts.push(`<path d="${d}" class="p" stroke="${c}" stroke-dasharray="26 ${Math.round(len + 40)}" style="stroke-dashoffset:${Math.round(len + 66)}px;animation-duration:${dur}s;animation-delay:${delay}s"/>`);
+        parts.push(`<circle cx="${Math.round(ex)}" cy="${ey}" r="4" class="n" stroke="${c}" style="color:${c};animation-delay:${delay}s"/>`);
+      }
+    }
+    const glyphs = ["&lt;/&gt;", "{ }", "01", "λ", "#!", "=&gt;", "&amp;&amp;", "[ ]", "0x1F", "fn", "ssh", "git"];
+    glyphs.forEach((g, k) => {
+      const x = Math.random() < .5 ? 20 + Math.random() * reach : w - 20 - Math.random() * reach;
+      parts.push(`<text x="${Math.round(x)}" y="${Math.round(120 + Math.random() * (h - 140))}" class="g" style="animation-delay:${(k * .9).toFixed(1)}s;animation-duration:${(7 + Math.random() * 4).toFixed(1)}s">${g}</text>`);
+    });
+    parts.push(`<rect class="scan" width="${w}" height="50" fill="#38bdf8" opacity=".03"/>`);
+    svg.innerHTML = parts.join("");
+  }
+  drawBackground();
+  let bgTimer = 0;
+  addEventListener("resize", () => { clearTimeout(bgTimer); bgTimer = setTimeout(drawBackground, 250); });
+
+  // ---------------------------------------------------------------- live data about Utsha
+  const USER = "UtshaBasak";
+  const DATA_URL = new URLSearchParams(location.search).get("data") || `https://raw.githubusercontent.com/${USER}/${USER}/output/data/profile.json`;
+  let data = null, source = "none";
+  const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const num = (n) => Number(n || 0).toLocaleString("en-US");
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const fmtDate = (iso) => { const d = new Date(iso); return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
+  function ago(iso) {
+    const s = (Date.now() - new Date(iso).getTime()) / 1000;
+    const units = [[31536000, "year"], [2592000, "month"], [86400, "day"], [3600, "hour"], [60, "minute"]];
+    for (const [sec, name] of units) { const v = Math.floor(s / sec); if (v >= 1) return `${v} ${name}${v > 1 ? "s" : ""} ago`; }
+    return "just now";
+  }
+  const safeUrl = (u) => /^https?:\/\//i.test(String(u || "")) ? esc(u) : "#";
+  const link = (p) => `<a href="${safeUrl(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`;
+  const own = () => (data?.projects || []).filter((p) => p.name !== USER);
+  const EMAIL = "utsha23basak@gmail.com"; // published in the profile README
+
+  async function loadData() {
+    try {
+      const r = await fetch(DATA_URL, { cache: "no-store" });
+      if (!r.ok) throw new Error(r.status);
+      data = await r.json(); source = "profile";
+    } catch {
+      try {
+        // Fallback: GitHub's public API has the basics, without commits or traffic.
+        const [u, repos] = await Promise.all([
+          fetch(`https://api.github.com/users/${USER}`).then((r) => r.ok ? r.json() : Promise.reject(r.status)),
+          fetch(`https://api.github.com/users/${USER}/repos?per_page=100&sort=pushed`).then((r) => r.ok ? r.json() : Promise.reject(r.status)),
+        ]);
+        const projects = repos.filter((r) => r.name !== USER && !r.archived).map((r) => ({
+          name: r.name, description: r.description || "", url: r.html_url, homepage: r.homepage || "", stars: r.stargazers_count,
+          forks: r.forks_count, language: r.language || "", created: r.created_at, pushed: r.pushed_at, fork: r.fork,
+        }));
+        data = {
+          updated: new Date().toISOString(),
+          user: { login: USER, name: u.name || USER, bio: u.bio || "", location: u.location || "", followers: u.followers, following: u.following, publicRepos: u.public_repos, joined: u.created_at },
+          totals: { stars: projects.reduce((a, p) => a + p.stars, 0), forks: projects.reduce((a, p) => a + p.forks, 0), projects: projects.length },
+          projects,
+        };
+        source = "api";
+      } catch { data = null; source = "none"; }
+    }
+    renderLive();
+    renderChips();
+  }
+  function renderLive() {
+    const el = $("#live");
+    if (source === "profile") el.innerHTML = `🟢 Live data from GitHub · Byte's memory was refreshed <b>${ago(data.updated)}</b> and refreshes every few hours.`;
+    else if (source === "api") el.innerHTML = "🟡 Reading GitHub's public API directly, so commit and traffic numbers are unavailable right now.";
+    else el.innerHTML = "🔴 Byte can't reach GitHub at the moment, so answers come from its built-in memory.";
+  }
+  loadData();
+  setInterval(loadData, 30 * 60 * 1000);
+
+  // ---------------------------------------------------------------- answers
+  const needData = "I can't reach GitHub right now, so I don't know that one. Try again in a minute! 📡";
+  const answers = {
+    who() {
+      const u = data?.user;
+      const edu = data?.education?.[0];
+      if (!u) return whoHtml;
+      const bio = u.bio ? (/^(a|an|the)\s/i.test(u.bio) ? u.bio : "a " + u.bio) : "a developer";
+      return `<b>${esc(u.name)}</b> is ${esc(bio)}${u.location ? `, based in ${esc(u.location)}` : ""}. ` +
+        `Utsha builds full-stack web apps, native Android apps, security tools and machine-learning models` +
+        `${edu ? `, and finished a ${esc(edu.qualification)} at ${esc(edu.school)} in ${esc(edu.year)}` : ""}. 🧑‍💻`;
+    },
+    working() {
+      const list = own().slice().sort((a, b) => new Date(b.pushed) - new Date(a.pushed)).slice(0, 3);
+      if (!list.length) return needData;
+      return `Right now Utsha is busiest on ${link(list[0])} (last update ${ago(list[0].pushed)})` +
+        (list.length > 1 ? `, followed by ${list.slice(1).map((p) => `${link(p)} (${ago(p.pushed)})`).join(" and ")}` : "") + ". 🛠️";
+    },
+    newest() {
+      const p = own().slice().sort((a, b) => new Date(b.created) - new Date(a.created))[0];
+      if (!p) return needData;
+      return `The newest project on GitHub is ${link(p)}, created on ${fmtDate(p.created)}. ${esc(shorten(p.description))}`;
+    },
+    popular() {
+      const list = own().slice().sort((a, b) => (b.stars - a.stars) || ((b.clones || 0) - (a.clones || 0)) || ((b.commits || 0) - (a.commits || 0)));
+      const p = list[0];
+      if (!p) return needData;
+      const extra = p.clones ? `, ${num(p.clones)} clones` : "";
+      return `The most popular project is ${link(p)} with ⭐ ${num(p.stars)} star${p.stars === 1 ? "" : "s"}${extra}. ${esc(shorten(p.description))}`;
+    },
+    commits() {
+      if (!data?.totals?.commits) return `I only have the basics right now, but you can count the commits on ${`<a href="https://github.com/${USER}?tab=repositories" target="_blank" rel="noopener">Utsha's repositories</a>`}. 📝`;
+      const top = own().slice().sort((a, b) => (b.commits || 0) - (a.commits || 0))[0];
+      return `Utsha's projects hold <b>${num(data.totals.commits)} commits</b> in total. The busiest is ${link(top)} with ${num(top.commits)}. 📝`;
+    },
+    activity() {
+      const c = data?.contributions;
+      if (!c) return needData;
+      const s = c.longestStreak;
+      return `In the last 12 months Utsha made <b>${num(c.lastYear)} contributions</b> on ${c.activeDays} different days. ` +
+        (s?.days ? `The longest streak ever is <b>${s.days} days</b> in a row, from ${fmtDate(s.from)} to ${fmtDate(s.to)}. 🔥` : "🔥");
+    },
+    languages() {
+      const l = data?.languages;
+      if (!l?.length) {
+        const counts = {}; own().forEach((p) => { if (p.language) counts[p.language] = (counts[p.language] || 0) + 1; });
+        const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([n]) => n);
+        return top.length ? `Utsha mostly writes ${top.join(", ")}. 💻` : needData;
+      }
+      return `By code size: ${l.slice(0, 5).map((x) => `<b>${esc(x.name)}</b> ${x.percent}%`).join(", ")}. ` +
+        "On top of that: React, Node.js, Express, MongoDB, Jetpack Compose, Django, PyTorch and scikit-learn. 💻";
+    },
+    traffic() {
+      const t = data?.totals;
+      if (t?.clones === undefined) return "Traffic numbers need Utsha's stats robot, and it's not reachable right now. 📡";
+      return `Since ${fmtDate(data.trafficSince)}, Utsha's projects were cloned <b>${num(t.clones)} times</b> and their pages viewed <b>${num(t.views)} times</b>. ` +
+        "Clones include automated CI runs, so views are the human visits. 👀";
+    },
+    stars() {
+      const t = data?.totals;
+      if (!t) return needData;
+      return `Across ${num(t.projects)} projects Utsha has ⭐ <b>${num(t.stars)} stars</b>, 🍴 <b>${num(t.forks)} forks</b>` +
+        (t.watchers !== undefined ? ` and 👀 <b>${num(t.watchers)} watchers</b>` : "") + ". Want to add one? Pick a favourite and hit the star! ⭐";
+    },
+    projects() {
+      const t = data?.totals, list = own();
+      if (!list.length) return needData;
+      const langs = [...new Set(list.map((p) => p.language).filter(Boolean))];
+      return `Utsha has <b>${num(t?.projects ?? list.length)} projects</b> on GitHub, written in ${langs.slice(0, 6).join(", ")}. ` +
+        `Highlights: ${list.slice(0, 3).map(link).join(", ")}. 🚀`;
+    },
+    education() {
+      const e = data?.education;
+      if (!e?.length) return "Utsha studied Computer Science at BRAC University in Dhaka. 🎓";
+      return e.map((x) => `🎓 <b>${esc(x.qualification)}</b>, ${esc(x.school)}, ${esc(x.city)} (${esc(x.year)})`).join("<br>");
+    },
+    contact() {
+      const email = EMAIL;
+      return `You can email Utsha at <a href="mailto:${esc(email)}">${esc(email)}</a> or say hi on <a href="https://github.com/${USER}" target="_blank" rel="noopener">GitHub</a>. 📫`;
+    },
+    work() {
+      const email = EMAIL;
+      return `Yes! Utsha is open to software engineering, security and machine-learning roles, and to open-source collaboration. Reach out at <a href="mailto:${esc(email)}">${esc(email)}</a>. 🤝`;
+    },
+    location() {
+      const loc = data?.user?.location || "Dhaka";
+      return `Utsha is based in <b>${esc(loc)}</b>, Bangladesh 🇧🇩.`;
+    },
+    building() {
+      const repo = (n) => own().find((p) => p.name === n) || { name: n, url: `https://github.com/${USER}/${n}` };
+      return `Utsha is building ${link(repo("BookStoreBD"))}, a live marketplace for new and second-hand books in Bangladesh, ` +
+        `and its native Android app, ${link(repo("BookStoreBD-Android"))}. 📚`;
+    },
+    exploring() {
+      const repo = own().find((p) => p.name === "Prohori") || { name: "Prohori", url: `https://github.com/${USER}/Prohori` };
+      return `Detection engineering and SOC tooling, with ${link(repo)} (প্রহরী means "guard"): a mini-SOC that turns raw logs into detections, incidents and analyst-ready reports. 🛡️`;
+    },
+    research() {
+      const repo = own().find((p) => p.name.startsWith("GNN-BERT")) || { name: "GNN + BERT music study", url: `https://github.com/${USER}/GNN-BERT-Music-Context-Understanding` };
+      return `Multimodal deep learning. ${link(repo)} combines graph neural networks and BERT for music tagging, genre, emotion and retrieval across 35,984 tracks. 🧠`;
+    },
+    scratch() {
+      return "Utsha loves building things from scratch: RSA, ECC and SHA-512 in JavaScript <b>BigInt</b> (UrbanNest Secure), " +
+        "journaling file systems in <b>C</b> (VSFS) and a 3D racing game in raw <b>OpenGL</b> (EndlessDriver). 🔐";
+    },
+    stack() {
+      return "<b>Web:</b> TypeScript, React, Vite, Tailwind, Node.js, Express, MongoDB, Socket.IO<br>" +
+        "<b>Android:</b> Kotlin, Jetpack Compose, Material 3, Hilt, Retrofit<br>" +
+        "<b>ML:</b> PyTorch, PyTorch Geometric, BERT, scikit-learn, pandas<br>" +
+        "<b>Backend & data:</b> Django, MySQL<br><b>DevOps:</b> Docker, GitHub Actions, CodeQL, Dependabot 🧰";
+    },
+    demos() {
+      const seen = new Set();
+      const live = own().filter((p) => /^https?:\/\//i.test(p.homepage || "") && !p.fork && !seen.has(p.homepage) && seen.add(p.homepage));
+      const links = live.map((p) => `<a href="${safeUrl(p.homepage)}" target="_blank" rel="noopener">${esc(p.name)}</a>`);
+      return `Yes! ${links.length ? `Live: ${links.join(", ")}. ` : ""}` +
+        `The Android app can be downloaded from <a href="https://github.com/${USER}/BookStoreBD-Android/releases/latest" target="_blank" rel="noopener">its latest release</a>. 🌐`;
+    },
+    followers() {
+      const u = data?.user;
+      if (!u) return needData;
+      return `Utsha has <b>${num(u.followers)} followers</b> and follows ${num(u.following)} people. You could be next! 😉 <a href="https://github.com/${USER}" target="_blank" rel="noopener">Follow on GitHub</a>`;
+    },
+  };
+  function shorten(t, n = 140) { t = String(t || ""); return t.length > n ? t.slice(0, n).replace(/\s+\S*$/, "") + "…" : t; }
+  function projectAnswer(p) {
+    const bits = [`⭐ ${num(p.stars)}`, `🍴 ${num(p.forks)}`];
+    if (p.commits !== undefined) bits.push(`📝 ${num(p.commits)} commits`);
+    if (p.clones !== undefined) bits.push(`📥 ${num(p.clones)} clones`);
+    return `${link(p)}${p.language ? ` (${esc(p.language)})` : ""}${p.fork ? " · a fork" : ""}: ${esc(shorten(p.description, 180))}<br>${bits.join(" · ")} · updated ${ago(p.pushed)}` +
+      (/^https?:\/\//i.test(p.homepage || "") ? ` · <a href="${safeUrl(p.homepage)}" target="_blank" rel="noopener">live site</a>` : "");
+  }
+
+  // Only fixed questions: each one maps to an answer built from public data.
+  const QUESTIONS = [
+    ["🙋 About Utsha", [
+      ["Who is Utsha?", "who"],
+      ["Where is Utsha based?", "location"],
+      ["Where did Utsha study?", "education"],
+      ["Is Utsha open to work?", "work"],
+      ["How can I contact Utsha?", "contact"],
+    ]],
+    ["🛠️ Work & skills", [
+      ["What is Utsha building?", "building"],
+      ["What is Utsha exploring?", "exploring"],
+      ["What are Utsha's research interests?", "research"],
+      ["What does Utsha like building from scratch?", "scratch"],
+      ["Which languages does Utsha use?", "languages"],
+      ["What's in Utsha's tech stack?", "stack"],
+      ["Is there a live demo I can try?", "demos"],
+    ]],
+    ["📊 GitHub stats", [
+      ["What did Utsha update recently?", "working"],
+      ["What's the most popular project?", "popular"],
+      ["What's the newest project?", "newest"],
+      ["How many projects, stars and forks?", "stars"],
+      ["How many commits?", "commits"],
+      ["What's the longest streak?", "activity"],
+      ["How many clones and views?", "traffic"],
+      ["How many followers?", "followers"],
+    ]],
+  ];
+  function renderChips() {
+    const groups = QUESTIONS.map(([title, qs]) => [title, qs.map(([text, key]) => `<button type="button" data-key="${key}">${esc(text)}</button>`)]);
+    const spotlight = own().slice().sort((a, b) => ((b.commits || 0) - (a.commits || 0)) || (b.stars - a.stars))
+      .map((p) => `<button type="button" data-project="${esc(p.name)}">Tell me about ${esc(p.name)}</button>`);
+    if (spotlight.length) groups.push(["🔦 Project spotlight", spotlight]);
+    $("#chips").innerHTML = groups.map(([title, buttons]) =>
+      `<div class="chip-group"><div class="chip-title">${title}</div><div class="chips">${buttons.join("")}</div></div>`).join("");
+  }
+  renderChips();
+  $("#chips").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.key) ask(answers[b.dataset.key]());
+    else { const p = own().find((x) => x.name === b.dataset.project); ask(p ? projectAnswer(p) : needData); }
+  });
+
+  async function ask(reply) {
+    if (state.asleep) await wake();
+    state.lastInput = Date.now();
+    stage.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+    setFace("wide", "smile"); setScreen("code");
+    say(reply, Math.min(16000, 5000 + reply.replace(/<[^>]+>/g, "").length * 45));
+    if (!state.busy) { state.busy = true; await jump(30); state.busy = false; }
+    cheer(3); achieve("curious");
+    setTimeout(() => { neutral(); setScreen("heart"); }, 2500);
+  }
+
+  // ---------------------------------------------------------------- start
+  renderAch(); meters();
+  const h = new Date().getHours(); if (h >= 0 && h < 5) achieve("owl");
+  setTimeout(async () => { setFace("happy", "grin"); say(rand(greetings()), 4000); await wave(2); neutral(); }, 600);
+})();
+</script>
+</body>
+</html>
