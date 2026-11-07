@@ -1,0 +1,70 @@
+name: Profile stats
+
+# Rebuilds the README's live cards, badges and contribution snake every six hours and publishes
+# them to the `output` branch. Nothing is committed to main.
+#
+# Clone and view counts need more than the workflow's own token: the TRAFFIC_TOKEN secret is a
+# fine-grained personal access token for all of the owner's repositories with the permission
+# "Administration: Read-only". It is only read, never used to write. Without it every other
+# number still updates, and the clone and view totals keep their last values.
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/build_profile.py
+      - .github/workflows/profile.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: profile
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build cards and badges
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # publish the output branch (nothing else is written)
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts/build_profile.py
+          sparse-checkout-cone-mode: false
+
+      - name: Fetch the previous record
+        env:
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          # The repository is public, so the existing record is read without any token.
+          url="https://github.com/${REPOSITORY}.git"
+          if git ls-remote --exit-code --heads "$url" output > /dev/null; then
+            git clone --quiet --depth 1 --branch output "$url" "$RUNNER_TEMP/previous"
+          else
+            mkdir -p "$RUNNER_TEMP/previous"
+          fi
+
+      - name: Build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRAFFIC_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
+        run: python3 scripts/build_profile.py dist "$RUNNER_TEMP/previous"
+
+      - name: Publish the output branch
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
+        with:
+          github_token: ${{ github.token }}
+          publish_branch: output
+          publish_dir: dist
+          force_orphan: true
+          disable_nojekyll: true
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          full_commit_message: Profile stats

@@ -1,0 +1,30 @@
+// Rules for the profile README, read by the markdownlint editor extension
+// and by `npx markdownlint-cli2`.
+{
+  "default": true,
+  // Badge rows and URLs cannot be wrapped.
+  "MD013": false,
+  // GitHub profile READMEs centre content, size images, switch images with the
+  // theme and lay out cards, none of which Markdown can do on its own.
+  "MD033": {
+    "allowed_elements": [
+      "a",
+      "b",
+      "br",
+      "details",
+      "div",
+      "img",
+      "p",
+      "picture",
+      "source",
+      "sub",
+      "summary",
+      "table",
+      "td",
+      "th",
+      "tr"
+    ]
+  },
+  // ...so the first line is the centred banner rather than a heading.
+  "MD041": false
+}
