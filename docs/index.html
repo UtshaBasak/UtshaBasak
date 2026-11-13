@@ -145,7 +145,7 @@
     <span>⚡ Energy <span class="bar" id="energyBar"><i></i></span></span>
     <span>💖 Happiness <span class="bar" id="happyBar"><i></i></span></span>
     <span>🖱️ <b id="clicks">0</b> clicks</span>
-    <button class="icon-btn" id="soundBtn" title="Sound effects">🔇 Sound off</button>
+    <button class="icon-btn" id="soundBtn" title="Sound effects">🔊 Sound on</button>
   </div>
 </header>
 
@@ -295,7 +295,7 @@
         <li>Leave Byte alone for 15 seconds and it falls asleep.</li></ul></div>
       <div><h3>🏅 Achievements &amp; sound</h3><ul>
         <li>Unlock all <b>13 achievements</b> below. They are saved in your browser.</li>
-        <li>Turn on <b>🔊 Sound</b> at the top for beeps, tunes and robot chatter.</li></ul></div>
+        <li>Sound is on by default (beeps, tunes and robot chatter); use the <b>🔊 Sound</b> button at the top to mute it.</li></ul></div>
     </div>
   </section>
 </main>
@@ -324,14 +324,15 @@
   // ---------------------------------------------------------------- state
   const state = {
     clicks: 0, energy: 100, happy: 60, busy: false, asleep: false, hot: false, disco: false,
-    lastInput: Date.now(), offset: { x: 0, y: 0 }, jokes: 0, pets: 0, sound: false,
+    lastInput: Date.now(), offset: { x: 0, y: 0 }, jokes: 0, pets: 0, sound: true,
   };
 
-  // ---------------------------------------------------------------- sound (synthesised, off by default)
+  // ---------------------------------------------------------------- sound (synthesised, on by default)
   let ctx = null;
   function beep(freq = 600, dur = 0.08, type = "square", vol = 0.05, when = 0) {
     if (!state.sound) return;
     ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
     const t = ctx.currentTime + when, o = ctx.createOscillator(), g = ctx.createGain();
     o.type = type; o.frequency.setValueAtTime(freq, t);
     g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
