@@ -37,7 +37,8 @@ I'm **Utsha Basak**, a Computer Science graduate from **BRAC University** in Dha
 - 🛡️ **Currently exploring:** detection engineering and SOC tooling with [Prohori](https://github.com/UtshaBasak/Prohori) (প্রহরী, "guard").
 - 🧠 **Research interest:** multimodal deep learning. My [GNN + BERT music study](https://github.com/UtshaBasak/GNN-BERT-Music-Context-Understanding) covers 35,984 tracks across four public corpora.
 - 🔐 **Things I like doing from scratch:** RSA, ECC and SHA-512 in JavaScript `BigInt`, journaling file systems in C, a 3D game in raw OpenGL.
-- 📚 **Open-source recognition:** [BookStoreBD](https://hub.xerj.org/corpus/utshabasak--bookstorebd) was selected for the [XERJ Corpus Hub](https://hub.xerj.org/contributors/UtshaBasak), an open reference library that AI coding agents search before they write code. The account-closing commit (33 files, 2,060 lines) is included under the MIT license with attribution to me and the [repository](https://github.com/UtshaBasak/BookStoreBD).- 🤝 **Open to:** software engineering, security and ML roles, and to collaborating on open source.
+- 📚 **Open-source recognition:** [BookStoreBD](https://hub.xerj.org/corpus/utshabasak--bookstorebd) was selected for the [XERJ Corpus Hub](https://hub.xerj.org/contributors/UtshaBasak), an open reference library that AI coding agents search before they write code. The account-closing commit (33 files, 2,060 lines) is included under the MIT license with attribution to me and the [repository](https://github.com/UtshaBasak/BookStoreBD).
+- 🤝 **Open to:** software engineering, security and ML roles, and to collaborating on open source.
 
 ---
 
