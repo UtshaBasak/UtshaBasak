@@ -1,0 +1,49 @@
+name: Metrics
+
+# Builds an extra stats image with lowlighter/metrics and commits it to the `metrics` branch
+# (never to main). It is not shown in the README yet; link
+# https://raw.githubusercontent.com/UtshaBasak/UtshaBasak/metrics/metrics.svg to use it.
+#
+# Needs the METRICS_TOKEN secret: a classic personal access token with no scopes (public data
+# only). Without it the job skips quietly.
+
+on:
+  schedule:
+    - cron: "41 3 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  metrics:
+    name: Build metrics.svg
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # commit metrics.svg to the metrics branch
+    steps:
+      - name: Check for the token
+        id: token
+        env:
+          METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+        run: |
+          if [ -n "$METRICS_TOKEN" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "::notice::METRICS_TOKEN is not set; skipping."; fi
+      - name: Make sure the metrics branch exists
+        if: steps.token.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          gh api "repos/${REPOSITORY}/branches/metrics" > /dev/null 2>&1 ||
+            gh api "repos/${REPOSITORY}/git/refs" -f ref=refs/heads/metrics -f sha="${SHA}" > /dev/null
+      - name: Metrics embed
+        if: steps.token.outputs.ok == 'true'
+        uses: lowlighter/metrics@65836723097537a54cd8eb90f61839426b4266b6 # v3.34
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          committer_branch: metrics
+          filename: metrics.svg
+          base: header, activity, community, repositories, metadata
+          plugin_isocalendar: yes
+          plugin_languages: yes
+          plugin_languages_ignored: html, css, jupyter notebook, tex
