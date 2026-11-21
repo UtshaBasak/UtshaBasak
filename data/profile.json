@@ -1,0 +1,310 @@
+{
+  "updated": "2026-11-21T07:20:23+00:00",
+  "user": {
+    "login": "UtshaBasak",
+    "name": "Utsha Basak",
+    "bio": "Computer Science Graduate From BRAC University",
+    "location": "Dhaka",
+    "blog": "",
+    "followers": 7,
+    "following": 21,
+    "publicRepos": 14,
+    "joined": "2023-05-26T19:07:18Z"
+  },
+  "totals": {
+    "stars": 17,
+    "forks": 3,
+    "watchers": 13,
+    "projects": 13,
+    "clones": 8903,
+    "views": 71,
+    "commits": 1364
+  },
+  "trafficSince": "2026-10-24",
+  "contributions": {
+    "lastYear": 1270,
+    "activeDays": 50,
+    "longestStreak": {
+      "days": 7,
+      "from": "2025-09-01",
+      "to": "2025-09-07"
+    }
+  },
+  "languages": [
+    {
+      "name": "TypeScript",
+      "percent": 34.7
+    },
+    {
+      "name": "Python",
+      "percent": 27.3
+    },
+    {
+      "name": "Kotlin",
+      "percent": 18.3
+    },
+    {
+      "name": "JavaScript",
+      "percent": 14.3
+    },
+    {
+      "name": "CSS",
+      "percent": 2.8
+    },
+    {
+      "name": "TeX",
+      "percent": 0.8
+    },
+    {
+      "name": "C",
+      "percent": 0.6
+    },
+    {
+      "name": "HTML",
+      "percent": 0.5
+    }
+  ],
+  "projects": [
+    {
+      "name": "BookStoreBD",
+      "language": "TypeScript",
+      "color": "#3178c6",
+      "stars": 3,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 1615,
+      "views": 17,
+      "commits": 422,
+      "description": "A full-stack marketplace for new and second-hand books in Bangladesh \u2014 built with MERN and TypeScript, it has role-based access, Bangla\u2013English search, voice search, order tracking, real-time buyer\u2013seller chat, a wanted board, reviews, admin analytics with auto moderation, AI chatbot and many more!",
+      "url": "https://github.com/UtshaBasak/BookStoreBD",
+      "homepage": "https://bookstorebd-loum.onrender.com",
+      "created": "2026-09-28T15:13:04Z",
+      "pushed": "2026-11-20T11:28:58Z",
+      "fork": false
+    },
+    {
+      "name": "Prohori",
+      "language": "Python",
+      "color": "#3572A5",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 4362,
+      "views": 10,
+      "commits": 325,
+      "description": "A mini-SOC: from raw logs to detections, enriched incidents and analyst-ready reports, with honest machine-learning evaluation and a streaming data pipeline.",
+      "url": "https://github.com/UtshaBasak/Prohori",
+      "homepage": "",
+      "created": "2026-10-24T19:53:23Z",
+      "pushed": "2026-11-21T06:57:28Z",
+      "fork": false
+    },
+    {
+      "name": "GNN-BERT-Music-Context-Understanding",
+      "language": "Python",
+      "color": "#3572A5",
+      "stars": 1,
+      "forks": 1,
+      "watchers": 1,
+      "clones": 315,
+      "views": 8,
+      "commits": 113,
+      "description": "A hybrid BERT + Graph Neural Network system for music context understanding, over four tasks and four baselines. The whole pipeline runs end to end on synthetic data in about two minutes on a CPU, so every module can be developed and tested before the real feature caches exist.",
+      "url": "https://github.com/UtshaBasak/GNN-BERT-Music-Context-Understanding",
+      "homepage": "",
+      "created": "2026-09-05T15:26:24Z",
+      "pushed": "2026-11-15T06:18:42Z",
+      "fork": false
+    },
+    {
+      "name": "MernBookstore",
+      "language": "JavaScript",
+      "color": "#f1e05a",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 173,
+      "views": 0,
+      "commits": 112,
+      "description": "A full-featured BookStoreBD with authentication, role-based access (Admin, Seller, Buyer), cart & wishlist, order tracking, real-time chat, and protected routes.",
+      "url": "https://github.com/UtshaBasak/MernBookstore",
+      "homepage": "",
+      "created": "2025-04-15T14:09:27Z",
+      "pushed": "2026-11-16T11:36:22Z",
+      "fork": true
+    },
+    {
+      "name": "UrbanNest",
+      "language": "JavaScript",
+      "color": "#f1e05a",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 399,
+      "views": 1,
+      "commits": 107,
+      "description": "UrbanNest \u2014 Rent Your Property: One stop solution for all your property needs. This is a full-stack property rental platform that connects property owners with tenants.  Browse and compare homes, request bookings, leave reviews, rate owners and tenants, and manage everything from a role-based dashboard.",
+      "url": "https://github.com/UtshaBasak/UrbanNest",
+      "homepage": "",
+      "created": "2025-08-03T19:58:07Z",
+      "pushed": "2026-11-16T11:22:43Z",
+      "fork": false
+    },
+    {
+      "name": "BookStoreBD-Android",
+      "language": "Kotlin",
+      "color": "#A97BFF",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 871,
+      "views": 0,
+      "commits": 91,
+      "description": "The native Android app for BookStoreBD, the marketplace for new and second-hand books in Bangladesh \u2014 Kotlin, Jetpack Compose and Material 3, with Bangla\u2013English search, secure sign-in, offline-friendly browsing, dark mode, full Bangla support, and many more!",
+      "url": "https://github.com/UtshaBasak/BookStoreBD-Android",
+      "homepage": "https://bookstorebd-loum.onrender.com",
+      "created": "2026-10-10T18:32:22Z",
+      "pushed": "2026-11-19T11:31:54Z",
+      "fork": false
+    },
+    {
+      "name": "UrbanNest_Secure",
+      "language": "JavaScript",
+      "color": "#f1e05a",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 341,
+      "views": 1,
+      "commits": 83,
+      "description": "UrbanNest_Secure \u2014 A property rental platform built around a hand-written cryptographic core.  Owners list properties, tenants book and review them, and every piece of personal data is encrypted before it reaches the database. RSA, ECC, SHA-512 and CBC-MAC are written from scratch with JavaScript BigInt arithmetic.",
+      "url": "https://github.com/UtshaBasak/UrbanNest_Secure",
+      "homepage": "",
+      "created": "2026-04-10T19:23:00Z",
+      "pushed": "2026-11-20T15:15:06Z",
+      "fork": false
+    },
+    {
+      "name": "Blood-Donation-Camp",
+      "language": "Python",
+      "color": "#3572A5",
+      "stars": 3,
+      "forks": 2,
+      "watchers": 1,
+      "clones": 183,
+      "views": 13,
+      "commits": 40,
+      "description": "A Django blood bank management system that connects donors, recipients and branch blood banks across Dhaka.",
+      "url": "https://github.com/UtshaBasak/Blood-Donation-Camp",
+      "homepage": "",
+      "created": "2024-10-27T20:51:27Z",
+      "pushed": "2026-11-16T11:28:24Z",
+      "fork": false
+    },
+    {
+      "name": "CSE422_Project",
+      "language": "Python",
+      "color": "#3572A5",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 134,
+      "views": 2,
+      "commits": 18,
+      "description": "A supervised machine learning project that predicts the outcome of a personal loan application from applicant demographics, financial history, and loan terms.",
+      "url": "https://github.com/UtshaBasak/CSE422_Project",
+      "homepage": "",
+      "created": "2026-09-20T10:33:43Z",
+      "pushed": "2026-11-16T11:33:32Z",
+      "fork": false
+    },
+    {
+      "name": "EndlessDriver",
+      "language": "Python",
+      "color": "#3572A5",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 125,
+      "views": 2,
+      "commits": 17,
+      "description": "Drive as far as you can, collect coins, and avoid obstacles! A 3D endless lane-racing game built from scratch in Python with PyOpenGL and GLUT \u2014 no game engine, no external assets. Every car, tree, coin and raindrop is drawn with raw OpenGL primitives.",
+      "url": "https://github.com/UtshaBasak/EndlessDriver",
+      "homepage": "",
+      "created": "2025-09-07T05:58:03Z",
+      "pushed": "2026-11-15T03:39:45Z",
+      "fork": false
+    },
+    {
+      "name": "SimpleFS",
+      "language": "C",
+      "color": "#555555",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 129,
+      "views": 0,
+      "commits": 14,
+      "description": "Implementation of a Simple File System in C programming language.",
+      "url": "https://github.com/UtshaBasak/SimpleFS",
+      "homepage": "",
+      "created": "2026-09-20T02:19:12Z",
+      "pushed": "2026-11-15T03:23:51Z",
+      "fork": false
+    },
+    {
+      "name": "SmartCity",
+      "language": "Packet Tracer",
+      "color": "#1ba0d7",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 120,
+      "views": 7,
+      "commits": 12,
+      "description": "A Cisco Packet Tracer implementation of an enterprise network for SmartCity Healthcare.",
+      "url": "https://github.com/UtshaBasak/SmartCity",
+      "homepage": "",
+      "created": "2026-09-21T02:28:07Z",
+      "pushed": "2026-11-15T03:45:38Z",
+      "fork": false
+    },
+    {
+      "name": "CSE321_VSFS",
+      "language": "C",
+      "color": "#555555",
+      "stars": 1,
+      "forks": 0,
+      "watchers": 1,
+      "clones": 136,
+      "views": 10,
+      "commits": 10,
+      "description": "A Journaling File System in C programming language.",
+      "url": "https://github.com/UtshaBasak/CSE321_VSFS",
+      "homepage": "",
+      "created": "2026-09-20T09:13:20Z",
+      "pushed": "2026-11-15T03:23:41Z",
+      "fork": false
+    }
+  ],
+  "education": [
+    {
+      "school": "BRAC University",
+      "city": "Dhaka",
+      "qualification": "BSc in Computer Science",
+      "year": "September 2026"
+    },
+    {
+      "school": "Notre Dame College",
+      "city": "Dhaka",
+      "qualification": "Higher Secondary Certificate (HSC)",
+      "year": "2020"
+    },
+    {
+      "school": "Bindu Basini Govt. Boys' High School",
+      "city": "Tangail",
+      "qualification": "Secondary School Certificate (SSC)",
+      "year": "2018"
+    }
+  ]
+}
