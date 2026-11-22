@@ -25,8 +25,16 @@ jobs:
         id: token
         env:
           METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+        # lowlighter/metrics rejects fine-grained tokens (github_pat_...) because GitHub's GraphQL
+        # API doesn't accept them, so skip with a warning instead of failing every day.
         run: |
-          if [ -n "$METRICS_TOKEN" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "::notice::METRICS_TOKEN is not set; skipping."; fi
+          if [ -z "$METRICS_TOKEN" ]; then
+            echo "::notice::METRICS_TOKEN is not set; skipping."
+          elif [[ "$METRICS_TOKEN" == github_pat_* ]]; then
+            echo "::warning::METRICS_TOKEN is a fine-grained token, which lowlighter/metrics does not support. Replace it with a classic token (ghp_...) with no scopes; skipping."
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Make sure the metrics branch exists
         if: steps.token.outputs.ok == 'true'
         env:
